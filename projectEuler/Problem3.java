@@ -15,9 +15,9 @@ public class Problem3 {
 	 * @return returnList an array of factors that are prime.
 	 */
 	public static Long[] primeFactorsOf( Long number){
-		Long [] returnList = new Long [10];
+		Long [] returnList = new Long [100];
 		int counter = 0;
-		for (Long i=(long) 2; i<=(number/10000); i++){
+		for (Long i=(long) 2; i<(number); i++){
 			 Long temp = number%i;
 			 if (temp==0){
 				 if(isPrime(i)){
@@ -36,22 +36,27 @@ public class Problem3 {
 	 */
 	public static boolean isPrime(double temporary){
 		double [] primesFound = new double [100];
-		boolean primeness = true;
+		boolean primeness = false;
 		for(double element : primesFound){
 			if(temporary==element){
 				for(int j=primesFound.length-1; j>0; j--){
 				primesFound[j]=primesFound[j-1];	
 				}
 				primesFound[0]= temporary;
-				return true;
+				primeness = true;
+				break;
 			}
 			
 		}
-		for (int i=2; i<(temporary); i++){
+		for (int i=2; i<(temporary) && !primeness ; i++){
 			if (temporary%i==0){
-				return false;
+				primeness = false;
+				break;
 			}
+			else primeness = true;{
 		}
+		}
+		return primeness;
 	}
 	
 	public static void main(String[] args) {
