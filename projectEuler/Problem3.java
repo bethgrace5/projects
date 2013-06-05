@@ -36,7 +36,7 @@ public class Problem3 {
 	 */
 	public static boolean isPrime(double temporary){
 		double [] primesFound = new double [100];
-		boolean primeness = false;
+		boolean primeness = true;
 		for(double element : primesFound){
 			if(temporary==element){
 				for(int j=primesFound.length-1; j>0; j--){
@@ -48,15 +48,12 @@ public class Problem3 {
 			}
 			
 		}
-		for (int i=2; i<(temporary) && !primeness ; i++){
+		for (int i=2; i<(temporary) && primeness ; i++){
 			if (temporary%i==0){
 				primeness = false;
-				break;
-			}
-			else primeness = true;{
 		}
-		}
-		return primeness;
+	}
+	return primeness;
 	}
 	
 	public static void main(String[] args) {
@@ -68,6 +65,7 @@ public class Problem3 {
 		
 		for (int i=0; i<100; i++){
 			if(start[i+1]==null){
+				System.out.println(start[i]);
 				break;
 			}
 		if(isPrime(start[i])){
