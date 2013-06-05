@@ -15,7 +15,7 @@ public class Problem3 {
 	 * @return returnList an array of factors that are prime.
 	 */
 	public static Long[] primeFactorsOf( Long number){
-		Long [] returnList = new Long [100];
+		Long [] returnList = new Long [1000];
 		int counter = 0;
 		for (Long i=(long) 2; i<(number); i++){
 			 Long temp = number%i;
@@ -61,12 +61,19 @@ public class Problem3 {
 	
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		Long[] start = new Long [10];
+		Long[] start = new Long [100];
 		System.out.println("Enter a number to find prime factors of.");
 		start = primeFactorsOf(in.nextLong());
 		in.close();
-		for (int i=0; i<10; i++){
-		System.out.println(start[i]);
+		
+		for (int i=0; i<100; i++){
+			if(start[i+1]==null){
+				break;
+			}
+		if(isPrime(start[i])){
+			System.out.println(start[i]);
+		}
+		else continue;
 		}
 	}
 }
