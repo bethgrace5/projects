@@ -35,9 +35,19 @@ public class Problem3 {
 	 * @return primeness (true or false)
 	 */
 	public static boolean isPrime(double temporary){
+		int [] primesFound = new int [1000];
 		boolean primeness = true;
-		for (int i=2; i<temporary; i++){
+		for(int element : primesFound){
+			if(temporary==element){
+				primeness=false;
+			}
+		}
+		for (int i=2; i<temporary && primeness; i++){
 			if (temporary%i==0){
+				for(int j=0; j<primesFound.length; j++){
+					primesFound[j+1]=primesFound[j];
+			}
+				temporary = primesFound[0];	
 				primeness = false;
 			}
 		}
