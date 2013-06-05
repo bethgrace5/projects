@@ -35,23 +35,23 @@ public class Problem3 {
 	 * @return primeness (true or false)
 	 */
 	public static boolean isPrime(double temporary){
-		int [] primesFound = new int [1000];
+		double [] primesFound = new double [100];
 		boolean primeness = true;
-		for(int element : primesFound){
+		for(double element : primesFound){
 			if(temporary==element){
-				primeness=false;
+				for(int j=primesFound.length-1; j>0; j--){
+				primesFound[j]=primesFound[j-1];	
+				}
+				primesFound[0]= temporary;
+				return true;
 			}
+			
 		}
-		for (int i=2; i<temporary && primeness; i++){
+		for (int i=2; i<(temporary); i++){
 			if (temporary%i==0){
-				for(int j=0; j<primesFound.length; j++){
-					primesFound[j+1]=primesFound[j];
-			}
-				temporary = primesFound[0];	
-				primeness = false;
+				return false;
 			}
 		}
-		return primeness;
 	}
 	
 	public static void main(String[] args) {
