@@ -8,19 +8,14 @@ import java.io.PrintWriter;
 public class fileReader{
 public static void main(String [] args) throws FileNotFoundException
 {
-File letter = new File("C:/Users/Bethgrace55/Documents/letter.txt");
-File number = new File("C:/Users/Bethgrace55/Documents/number.txt");
-Scanner in1 = new Scanner (letter);
-Scanner in2 = new Scanner (number);
-
-for (int i=0; i<5; i++){
-String let = in1.next();
-String num = in2.next();
-
-System.out.println(let + num);
+File primesList = new File("C:/Users/Bethgrace55/Documents/primesList.txt");
+Scanner in1 = new Scanner (primesList);
+for (int i=0; i<100; i++){
+Long let = in1.nextLong();
+System.out.println(let);
 }
 in1.close();
-in2.close();
+
 
 
 	}
