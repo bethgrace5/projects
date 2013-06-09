@@ -1,44 +1,48 @@
 package projectEuler;
-
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 /**
- * @author Bethgrace55
+ * @author Bethgrace5
  * The prime factors of 13195 are 5, 7, 13 and 29.
  * What is the largest prime factor of the number 600851475143 ?
  */
 import java.util.Scanner;
 public class Problem3{
-		private Scanner in1 = new Scanner("C:/Users/Bethgrace55/Documents/primesList.txt");
-		private static Set<Long> primesFound = new HashSet<Long>(500);
+	public static Set<Long> primesFound = new HashSet<Long>(100);
+	public static Iterator<Long> checkForFactors = primesFound.iterator();
 	/**
-	 * generates a list of factors and uses isPrime() to return only the prime factors.
-	 * @param number the number to generate factors from.
-	 * @return returnList an array of factors that are prime.
+	 * @param number - the number to generate primes factors of.
+	 * @return returnList - the list of number's prime factors.
 	 */
-	public static Long[] primeFactorsOf( Long number){
-		Long [] returnList = new Long [100];
-		int counter = 0;
-		for (Long i= 3L; i<=(number/2); i+=2){
-			 Long temp = number%i;
-			 if (temp==0){
-				 if( primesFound.contains(i) || isPrime(i)){
-					 returnList[counter]=i;
-					 counter++;
-				 }
+	public static ArrayList<Long> primeFactorsof(Long number){
+		ArrayList<Long> returnList = new ArrayList<Long>();
+		if (Collections.max(primesFound) < number/2){
+			for(Long i=Collections.max(primesFound)+1; i<= number/2; i++){
+				if (isPrime(i)){
+					primesFound.add(i);
+	/*
+	 *TODO: use a print writer to add new primes to primesArchive File.
+	 */
+				}
 			}
 		}
-	
-	return returnList;
+		while (checkForFactors.hasNext()){
+			if (number%checkForFactors.next()==0){
+				returnList.add(checkForFactors.next());
+		}
+		}
+		return returnList;
 	}
 	/**
 	 * checks if a number is prime or not.
-	 * @param temporary number to check.
-	 * @return primeness (true or false)
+	 * @param temporary: number to check.
+	 * @return primeness: true if prime, false if not.
 	 */
 	public static boolean isPrime(Long temporary){
 		boolean primeness = true;
@@ -49,33 +53,27 @@ public class Problem3{
 			if (primeness && temporary%i==0){
 				primeness = false;
 			}
-			if (primeness){
-				primesFound.add(i);
-			}
 	}
 	return primeness;
 	}
 	
 	public static void main(String[] args)throws FileNotFoundException {
-		File primesList = new File ("C:/Users/Bethgrace55/Documents/primesList.txt");
-		Scanner fileReader = new Scanner(primesList);
-		for (int i=0; i<5098; i++){
-			primesFound.add(fileReader.nextLong());
+		String home = System.getProperty("user.home");
+		Scanner numFromFile = new Scanner("C:/Users/" + home + "/Documents/primesList.txt");
+		//loading primesFound with up to date list of primes.
+		while(numFromFile.hasNextLong()){
+			primesFound.add(numFromFile.nextLong());
 		}
-		Long[] start = new Long [100];
+		
+		ArrayList<Long> start = new ArrayList<Long>();
+		
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter a number to find prime factors of.");
-		start = primeFactorsOf(in.nextLong());
+		
+		start = primeFactorsof(in.nextLong());
 		in.close();
-		
-		
-		for (int i=0; i<100; i++){
-			System.out.println(start[i]);
-			if(start[i+1]==null){
-				break;
-			}
-		}
-		
+		numFromFile.close();
+			System.out.println(start.toString());
 	}
 }
 
