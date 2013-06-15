@@ -11,9 +11,9 @@ public class IteratorPractice {
 		numbers.add(2);
 		numbers.add(4);
 	
-		
-		while(printNumbers.hasNext())
-		System.out.println(printNumbers.next());
+		System.out.println(numbers.iterator().next());
+		System.out.println(numbers.iterator().next());
+		System.out.println(numbers.iterator().next());
 	
 	}
 	
