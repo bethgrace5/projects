@@ -5,14 +5,14 @@ import java.util.Iterator;
 
 public class IteratorPractice {
 	public static void main(String[] args){
-		TreeSet<String> words = new TreeSet<String>();	
-		Iterator<String> printWords = words.iterator();
-		words.add("the");
-		words.add("and");
-		words.add("cat");
+		TreeSet<Integer> numbers = new TreeSet<Integer>();	
+		Iterator<Integer> printNumbers = numbers.iterator();
+		numbers.add(3);
+		numbers.add(2);
+		numbers.add(4);
 		
-	while (printWords.hasNext()){
-		System.out.println(printWords.next());
+	while (printNumbers.hasNext()){
+		System.out.println(printNumbers.next());
 	}
 	}
 	
