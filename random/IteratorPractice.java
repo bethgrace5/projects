@@ -10,11 +10,11 @@ public class IteratorPractice {
 		numbers.add(3);
 		numbers.add(2);
 		numbers.add(4);
+	
 		
-	while (numbers.iterator().hasNext()){
-		int num = numbers.iterator().next();
-		System.out.println(num);
-	}
+		while(printNumbers.hasNext())
+		System.out.println(printNumbers.next());
+	
 	}
 	
 }	
