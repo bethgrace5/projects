@@ -10,10 +10,9 @@ public class IteratorPractice {
 		numbers.add(3);
 		numbers.add(2);
 		numbers.add(4);
+		numbers.add(3);
 	
-		System.out.println(numbers.iterator().next());
-		System.out.println(numbers.iterator().next());
-		System.out.println(numbers.iterator().next());
+		System.out.println(numbers.toString());
 	
 	}
 	
