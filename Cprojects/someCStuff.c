@@ -13,15 +13,15 @@ int main(int argc, char *argv[]){
 	letters = fopen("letters.txt", "r");	
 //create a place to store what is read from the files
 int nextnumber[7];
-int nextletter[7];
+char nextletter[7];
 //read the files.
 fread(nextnumber, sizeof(int), 7, numbers);
 fread(nextletter, sizeof(int), 7, letters);
 //print the files;
 int i=0;
 for(i=0; i<8; i++){
-printf("number%d:%d\n",i, nextnumber[i]);
-printf("letter%d:%d\n",i, nextletter[i]);
+printf("number[%d]:%d\n",i,(int) nextnumber[i]);
+printf("letter[%d]:%d\n",i,(char) nextletter[i]);
 };
 fclose(numbers);
 fclose(letters);
