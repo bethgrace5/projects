@@ -20,8 +20,8 @@ fread(nextletter, sizeof(int), 7, letters);
 //print the files;
 int i=0;
 for(i=0; i<8; i++){
-printf("number[%d]:%d\n",i,(int) nextnumber[i]);
-printf("letter[%d]:%d\n",i,(char) nextletter[i]);
+printf("number[%d]:%13d    ",i,(int) nextnumber[i]);
+printf("letter[%d]:%9d\n",i,(char) nextletter[i]);
 };
 fclose(numbers);
 fclose(letters);
