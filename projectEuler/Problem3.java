@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -73,9 +74,9 @@ public class Problem3{
 		File dir =  new File(home + "\\Documents\\primesList.txt");
 		Scanner numFromFile = new Scanner(dir);
 		//loading primesFound with up to date list of primes.
+		primesFound.add(1L);
 		while(numFromFile.hasNextLong()){
 		primesFound.add(numFromFile.nextLong());
-		System.out.println("added number");
 		}
 		ArrayList<Long> start = new ArrayList<Long>();
 		//proof that file is being read and primnesFound is initialized with file contents. 
@@ -83,7 +84,7 @@ public class Problem3{
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter a number to find prime factors of.");
 		start = primeFactorsof(in.nextLong());
-		FileWriter out = new FileWriter(dir, true);
+		PrintWriter out = new PrintWriter(dir);
 		System.out.println(start.toString());
 		//updating file with newly accumulated data for future use.
 		for(int t=0; t<append.size(); t++){
