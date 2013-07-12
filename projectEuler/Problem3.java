@@ -35,6 +35,7 @@ public class Problem3{
 		if (end < number/2){
 			for(Long i=end; i<= number/2; i++){
 				if (isPrime(i)){
+					if(i==end){continue;}
 					append.add(i);
 				}
 			}
@@ -45,7 +46,6 @@ public class Problem3{
 			
 			if (next<number/2 && number%next==0){
 				returnList.add(next);
-				System.out.println(next);
 			
 		}
 		}
@@ -84,12 +84,11 @@ public class Problem3{
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter a number to find prime factors of.");
 		start = primeFactorsof(in.nextLong());
-		PrintWriter out = new PrintWriter(dir);
+		FileWriter out = new FileWriter(dir, true);
 		System.out.println(start.toString());
 		//updating file with newly accumulated data for future use.
 		for(int t=0; t<append.size(); t++){
-			out.write(append.get(t)+" ");
-			System.out.println(append.get(t)+"\n");
+			out.write(" " + append.get(t));
 		}
 		out.close();
 		in.close();
