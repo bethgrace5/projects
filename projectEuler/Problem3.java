@@ -71,8 +71,6 @@ public class Problem3{
 		primesFound.add(numFromFile.nextLong());
 		}
 		ArrayList<Long> start = new ArrayList<Long>();
-		//proof that file is being read and primnesFound is initialized with file contents. 
-		System.out.print(primesFound.toString());
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter a number to find prime factors of.");
 		start = primeFactorsof(in.nextLong());
