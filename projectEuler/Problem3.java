@@ -1,17 +1,9 @@
 package projectEuler;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 /**
  * @author Bethgrace5
