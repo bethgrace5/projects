@@ -4,21 +4,48 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.swing.ListModel;
+
 //this class constructs Employees and has main in it.
 //I want to create a panel that has input areas to create or modify Employees.
 //Create a File to store Employee data
 //Create a File to store generated Schedules
+//will probably change several arrays/ArrayLists to other kinds of sets/tables.
 
 public class Employee{
-	static String name, primary_position, alt_position;
-	public ArrayList <Employee> Employees = new ArrayList<Employee>();
-	
-	Employee(String name, String primary_position, String alt_position, int num_workdays){
+	static String name, position, altPosition;
+	static ArrayList <Employee> Employees = new ArrayList<Employee>();
+	Employee(String name, String position, String altPosition){
 		this.name = name;
-		//or name = this.name;?
-		this.primary_position = primary_position;
-		this.alt_position = alt_position;
+		this.position = position;
+		this.altPosition = altPosition;
+	}
+	Employee(String name, String position){
+		this.name = name;
+		this.position = position;
+	}
+	public static String names(){
 		
+		return "name 1";
+	}
+	//this function looks at each specific day, to see if person can work that day.
+	public boolean isAvailable(Employee person, int day){
+		boolean canwork=true;
+		
+		if(person.requestedOff.contains(date)){
+			canwork=false;
+		}
+		for(i=0,j=0,k=0; somecondition && canwork; ++i, ++j, ++k){
+			
+			if(person.shifts.contains()){
+				ListAvailablePeople[i][j][k]
+				
+				
+			}
+			
+			
+			
+		}
 		
 	}
 	
@@ -52,8 +79,13 @@ public class Employee{
 		 *  
 		 *  
 		 */
-		Scanner readEmployees = new Scanner(new File ("employee_data.txt"));
-		Scanner readSchedule = new Scanner(new File ("schedule_data.txt"));
+		Employees.add(new Employee("a", "cashier"));
+		Employees.add(new Employee("b", "cold"));
+		Employees.add(new Employee("c", "super", "cashier"));
+		Employees.add(new Employee("d", "super", "cold"))
+;		
+		Scanner readEmployees = new Scanner(new File ("employeeData.txt"));
+		Scanner readSchedule = new Scanner(new File ("scheduleData.txt"));
 		
 		readEmployees.close();
 		readSchedule.close();
