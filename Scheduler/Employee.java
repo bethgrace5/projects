@@ -3,6 +3,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 import javax.swing.ListModel;
@@ -10,9 +15,12 @@ import javax.swing.ListModel;
 //Each Employee will have their own file. 
 //
 
-public class Employee implements Serializable{
-	static String name, position, altPosition;
-	static ArrayList <Employee> Employees = new ArrayList<Employee>();
+public class Employee /*implements Serializable*/{
+	private static String home = System.getProperty("user.home");
+	String name;
+	String position;
+	String altPosition;
+	ArrayList <Employee> Employees = new ArrayList<Employee>();
 	int[] requestedOff = new int[5];
 	//construct Employee with two possible positions
 	Employee(String name, String position, String altPosition){
@@ -27,22 +35,35 @@ public class Employee implements Serializable{
 		this.position = position;
 		this.requestedOff = requestedOff;
 	}
-	//use ObjectInputStream to read a file for an existing employee. load data into buffer?
-	public void getEmployee(/*path*/){
+	// read a file for an existing employee. load data into buffer?
+	public void getEmployee(){
 		
 		
 	}
-	//use ObjectOutputStream to create a file for a new employee, or overwrite an existing file for changes.
-	public File setEmployee(){
-		//calls constructor to create Employee, (whether existing or not)
-		//if exists, overwrite file and return location
-		//if not exists, return new file location
+	//creates a file for a new employee, or overwrite an existing file if Employee name is the same as existing name. 
+	public static void editEmployee(Employee person) throws FileNotFoundException{
+		File nameFile = new File(home + "\\Documents\\Employees\\"+person.name+".txt");
+		PrintWriter out = new PrintWriter(nameFile);
+		out.write(person.name);
+		out.write(person.position);
+		out.write(person.altPosition);
+		out.close();
+		return;
 	}
-			
+	public static void removeEmployee(File toRemove){
+		//find name of file in path
+		//remove file
+	}
 	
-	
-	public static void main(String[] args) throws FileNotFoundException{
-	
+	public static void main(String[] args) throws IOException{
+		
+		Employee tester = new Employee("name", "positionssss", "altPositionssss");
+		
+		editEmployee(tester);
+		
+		
+		
+		
 		
 	}
 
