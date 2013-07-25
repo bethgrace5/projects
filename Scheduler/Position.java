@@ -1,20 +1,5 @@
 package Scheduler;
- class Position {
 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+class Position {
+
 }
