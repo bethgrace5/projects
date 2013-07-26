@@ -10,16 +10,17 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-
+import javafx.application.Application;
 import javax.swing.ListModel;
 
-//Each Employee will have their own file. 
-//
+/* This class contains the constructor for creating an Employee.
+ * Will be able to edit existing employees, remove employees or add employees.
+ * 
+ * 
+ * 
+ */
 
 public class Employee /* implements Serializable */{
-	/**
-	 * 
-	 */
 	// private static final long serialVersionUID = 655451095884888984L;
 	private static String home = System.getProperty("user.home");
 	String name;
@@ -43,13 +44,21 @@ public class Employee /* implements Serializable */{
 		this.requestedOff = requestedOff;
 	}
 
-	// read a file for an existing employee. load data into buffer?
+	/** TODO: read a file for an existing employee. load data into buffer?
+	 *  This method uses the name of Employee selected in list from Visual.empPane() to access all of their data
+	 *  to load into fields in Visual.addFormFields().
+	 *  @param: Employee (only the name of Employee is
+	 *  @return: Employee
+	 */
 	public void getEmployee() {
 
 	}
 
-	// creates a file for a new employee, or overwrite an existing file if
-	// Employee name is the same as existing name.
+	/**creates a file for a new employee, or overwrite an existing file if
+	 * Employee name is the same as existing name.
+	 * @param Employee person -an existing Employee
+	 * @return void
+	 */
 	public static void editEmployee(Employee person)
 			throws FileNotFoundException {
 		File nameFile = new File(home + "\\Documents\\Employees\\"
@@ -61,19 +70,22 @@ public class Employee /* implements Serializable */{
 		out.close();
 		return;
 	}
-
+	/** TODO: method will search for file name, and remove file.
+	 * @param File toRemove 
+	 * @return void
+	 */
 	public static void removeEmployee(File toRemove) {
-		// find name of file in path
-		// remove file
+		
 	}
 
+	
 	public static void main(String[] args) throws IOException {
-
 		Employee tester = new Employee("name", "positionssss",
 				"altPositionssss");
-
 		editEmployee(tester);
-
+		
+		//TODO: Launch Visual from main in Employee.
+		
 	}
 
 }
