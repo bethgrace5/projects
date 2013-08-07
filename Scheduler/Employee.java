@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import javafx.application.Application;
 import javax.swing.ListModel;
+import javafx.application.Application;
 
 /* This class contains the constructor for creating an Employee.
  * Will be able to edit existing employees, remove employees or add employees.
@@ -64,9 +65,9 @@ public class Employee /* implements Serializable */{
 		File nameFile = new File(home + "\\Documents\\Employees\\"
 				+ person.name + ".txt");
 		PrintWriter out = new PrintWriter(nameFile);
-		out.write(person.name);
-		out.write(person.position);
-		out.write(person.altPosition);
+		out.println(person.name);
+		out.println(person.position);
+		out.println(person.altPosition);
 		out.close();
 		return;
 	}
@@ -80,10 +81,10 @@ public class Employee /* implements Serializable */{
 
 	
 	public static void main(String[] args) throws IOException {
-		Employee tester = new Employee("name", "positionssss",
-				"altPositionssss");
+		Employee tester = new Employee("name", "position",
+				"altPosition");
 		editEmployee(tester);
-		
+		Visual.launchGUI();
 		//TODO: Launch Visual from main in Employee.
 		
 	}

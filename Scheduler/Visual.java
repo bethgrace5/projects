@@ -2,6 +2,7 @@ package Scheduler;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.Scene;
 import javafx.collections.FXCollections;
@@ -33,10 +34,9 @@ import javafx.scene.layout.VBox;
 
 public class Visual extends Application{
 
-
-	public static void main(String[] args) {
-		Application.launch(args);
-		}
+	public static void launchGUI(){
+		Application.launch();
+	}
 	/**
 	 * JavaFX uses main() to launch start(). this method uses several other methods to build GUI.
 	 * From the top down:
@@ -56,13 +56,13 @@ public class Visual extends Application{
 		
 		Tab employee = new Tab();
 		employee.setText("Employee");
-		employee.setStyle("-fx-font-size: 14pt");
+		employee.setStyle("-fx-font-size: 18pt");
 		employee.setClosable(false);
 		employee.setContent(empPane());
 		
 		Tab schedule = new Tab();
 		schedule.setText("Schedule");
-		schedule.setStyle("-fx-font-size: 14pt");
+		schedule.setStyle("-fx-font-size: 18pt");
 		schedule.setClosable(false);
 		//schedule.setContent(schPane());
 		
@@ -90,6 +90,7 @@ public class Visual extends Application{
 		empList.setMaxHeight(100);
 	    empList.setPrefWidth(150.0);
 	    
+	    
 		emp.setLeft(empList);
 		emp.setCenter(addFormFields());
 		emp.setBottom(createButtonRow());
@@ -105,8 +106,16 @@ public class Visual extends Application{
 		foot.setPadding(new Insets(10, 20, 10, 20));
 		foot.setSpacing(10);
 		Button buttonDelete = new Button("Delete");
-		Button buttonSave = new Button("Save");
+		buttonDelete.setAlignment(Pos.BOTTOM_RIGHT);
+		buttonDelete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		
+		Button buttonSave = new Button(" Save ");
+		buttonSave.setAlignment(Pos.BOTTOM_RIGHT);
+		buttonSave.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		
 		Button buttonCancel = new Button("Cancel");
+		buttonCancel.setAlignment(Pos.BOTTOM_RIGHT);
+		buttonCancel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		foot.getChildren().addAll(buttonDelete, buttonSave, buttonCancel);
 		
 		return foot;
