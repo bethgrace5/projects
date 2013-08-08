@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -37,6 +38,30 @@ import javafx.scene.layout.VBox;
 public class Visual extends Application{
 	static Label[] weekdays ={new Label("Monday"), new Label("Tuesday"), new Label("Wednesday"),
 			new Label("Thursday"), new Label("Friday"), new Label("Saturday"), new Label("Sunday")};
+	static Label[] shifts = {new Label("s1"), new Label("c1"), new Label("c2"), new Label("c3"), 
+		new Label("c4"), new Label("p1"), new Label("p2")};
+	
+	static CheckBox [] s1 = {new CheckBox(), new CheckBox(), new CheckBox(),
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] c1 ={new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] c2 = {new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] c3 ={new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] c4 = {new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] p1 ={new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
+	static CheckBox [] p2 ={new CheckBox(), new CheckBox(), new CheckBox(), 
+		new CheckBox(), new CheckBox(), new CheckBox()};
+	
 	
 	public static void launchGUI(){
 		Application.launch();
@@ -156,13 +181,13 @@ public class Visual extends Application{
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(0, 10, 10, 10));
+		grid.setPadding(new Insets(0, 10, 10, 40));
 		grid.setMinSize(100, 100);
 		grid.setAlignment(Pos.TOP_LEFT);
 		Label empName = new Label("Employee Name:");
 		Label position = new Label("Position:");
 		Label altPosition = new Label("Alternate Position:");
-		Label cell = new Label("Cell Phone");
+		Label cell = new Label("Contact");
 		TextField name = new TextField();
 		name.setPromptText("New Employee Name");
 		TextField cellp = new TextField();
@@ -192,15 +217,25 @@ public class Visual extends Application{
 		GridPane boxes = new GridPane();
 		boxes.setHgap(10);
 		boxes.setVgap(10);
-		boxes.setPadding(new Insets(0, 0, 0, 60));
-		boxes.setMinWidth(500);
-		for(Integer i =0; i<7; ++i){
-			boxes.add(weekdays[i], i, 0);
+		boxes.setPadding(new Insets(0, 20, 0, 40));
+	
+		for(int i =1; i<7; ++i){
+			boxes.add(weekdays[i-1], i, 0);
+			boxes.add(shifts[i-1], 0, i);
+			if(i==6){
+			boxes.add(shifts[6], 0, 7);
+			}
+			if(s1[i-1] != null){
+			boxes.add(s1 [i-1], i, 1);
+			boxes.add(c1 [i-1], i, 2);
+			boxes.add(c2 [i-1], i, 3);
+			boxes.add(c3 [i-1], i, 4);
+			boxes.add(c4 [i-1], i, 5);
+			boxes.add(p1 [i-1], i, 6);
+			boxes.add(p2 [i-1], i, 7);
+			}
 		}
-		
-		
 		//boxes.setGridLinesVisible(true);
-		//TODO add Checkboxes!
 		return boxes;
 	}
 }
