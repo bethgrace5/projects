@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
@@ -67,7 +68,8 @@ public class Visual extends Application{
 		Application.launch();
 	}
 	/**
-	 * JavaFX uses main() to launch start(). this method uses several other methods to build GUI.
+	 * JavaFX uses main() in Employee to launch start(). this method uses several other methods 
+	 * to build GUI.
 	 * From the top down:
 	 * -Stage is set (JavaFX for Window)
 	 * -within stage is a Scene
@@ -93,6 +95,7 @@ public class Visual extends Application{
 		schedule.setText("Schedule");
 		schedule.setStyle("-fx-font-size: 18pt");
 		schedule.setClosable(false);
+		schedule.setContent(schPane());
 		//schedule.setContent(schPane());
 		
 		tabs.getTabs().addAll(employee, schedule);
@@ -127,6 +130,14 @@ public class Visual extends Application{
 		emp.setBottom(createButtonRow());
 		emp.setRight(createCheckboxes());
 		return emp;
+	}
+	private Pane schPane(){
+		BorderPane sch = new BorderPane();
+		sch.setPadding(new Insets(10, 10, 10, 10));
+		sch.setLeft(text());
+		sch.setCenter(schedule());
+		//sch.setTop();
+		return sch;
 	}
 	/**
 	 * Creates bottom row button options for Employee Pane
@@ -237,5 +248,20 @@ public class Visual extends Application{
 		}
 		//boxes.setGridLinesVisible(true);
 		return boxes;
+	}
+	private static TextArea text(){
+		TextArea text = new TextArea();
+		//text.setEditable(true);
+		text.setPrefHeight(100);
+		text.setPromptText("Notes, Reminders, Comments, Events . . . ");
+		return text;
+	}
+	private static GridPane schedule(){
+		GridPane grid = new GridPane();
+		
+		
+		
+		
+		return grid;
 	}
 }
