@@ -35,7 +35,9 @@ import javafx.scene.layout.VBox;
  */
 
 public class Visual extends Application{
-
+	static Label[] weekdays ={new Label("Monday"), new Label("Tuesday"), new Label("Wednesday"),
+			new Label("Thursday"), new Label("Friday"), new Label("Saturday"), new Label("Sunday")};
+	
 	public static void launchGUI(){
 		Application.launch();
 	}
@@ -70,7 +72,7 @@ public class Visual extends Application{
 		
 		tabs.getTabs().addAll(employee, schedule);
 		
-		Scene scene = new Scene(tabs, 650, 450);
+		Scene scene = new Scene(tabs, 900, 350);
 		primaryStage.setTitle("Employee Staff Management");
 		//Change title when tabs change (After Implementing Events and Actions.
 		//primaryStage.setTitle("Employee Staff Management");
@@ -84,20 +86,21 @@ public class Visual extends Application{
 	private Pane empPane(){
 		//List of existing employees
 		BorderPane emp = new BorderPane();
-        emp.setPadding(new Insets(30, 0, 0, 20));
+        emp.setPadding(new Insets(10, 10, 10, 10));
 		ListView<String> empList = new ListView<String>();
 		ObservableList<String> list = FXCollections.observableArrayList("+add new", "name1", "name2", "name3", "name4", "name5", "name6");
 		
 		empList.setItems(list);
 		empList.getSelectionModel().select(0);
-		empList.setMaxHeight(100);
+		empList.setMaxHeight(300);
 	    empList.setPrefWidth(150.0);
-	    
+	    //TODO: set default focus to selected item in empList upon launch.
+	    //empList.requestFocus();
 	    
 		emp.setLeft(empList);
-		emp.setRight(addFormFields());
+		emp.setCenter(addFormFields());
 		emp.setBottom(createButtonRow());
-		emp.setCenter(createCheckboxes());
+		emp.setRight(createCheckboxes());
 		return emp;
 	}
 	/**
@@ -140,7 +143,7 @@ public class Visual extends Application{
 			
 		});
 		foot.getChildren().addAll(buttonDelete, buttonSave, buttonQuit);
-		
+		//TODO move buttons to the far right
 		return foot;
 	}
 	/**
@@ -154,7 +157,7 @@ public class Visual extends Application{
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(0, 10, 10, 10));
-		grid.setMinSize(400, 300);
+		grid.setMinSize(100, 100);
 		grid.setAlignment(Pos.TOP_LEFT);
 		Label empName = new Label("Employee Name:");
 		Label position = new Label("Position:");
@@ -181,14 +184,23 @@ public class Visual extends Application{
 		grid.add(altPositions, 1, 2);
 		grid.add(cell, 0,3);
 		grid.add(cellp,  1, 3);
+		
 		//grid.setGridLinesVisible(true);
 		return grid;
 	}
 	private static GridPane createCheckboxes(){
 		GridPane boxes = new GridPane();
+		boxes.setHgap(10);
+		boxes.setVgap(10);
+		boxes.setPadding(new Insets(0, 0, 0, 60));
+		boxes.setMinWidth(500);
+		for(Integer i =0; i<7; ++i){
+			boxes.add(weekdays[i], i, 0);
+		}
 		
-		boxes.setGridLinesVisible(true);
 		
+		//boxes.setGridLinesVisible(true);
+		//TODO add Checkboxes!
 		return boxes;
 	}
 }
