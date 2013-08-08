@@ -1,6 +1,8 @@
 package Scheduler;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Control;
@@ -82,18 +84,20 @@ public class Visual extends Application{
 	private Pane empPane(){
 		//List of existing employees
 		BorderPane emp = new BorderPane();
-        emp.setPadding(new Insets(20, 10, 20, 10));
+        emp.setPadding(new Insets(30, 0, 0, 20));
 		ListView<String> empList = new ListView<String>();
 		ObservableList<String> list = FXCollections.observableArrayList("+add new", "name1", "name2", "name3", "name4", "name5", "name6");
 		
 		empList.setItems(list);
+		empList.getSelectionModel().select(0);
 		empList.setMaxHeight(100);
 	    empList.setPrefWidth(150.0);
 	    
 	    
 		emp.setLeft(empList);
-		emp.setCenter(addFormFields());
+		emp.setRight(addFormFields());
 		emp.setBottom(createButtonRow());
+		emp.setCenter(createCheckboxes());
 		return emp;
 	}
 	/**
@@ -108,15 +112,34 @@ public class Visual extends Application{
 		Button buttonDelete = new Button("Delete");
 		buttonDelete.setAlignment(Pos.BOTTOM_RIGHT);
 		buttonDelete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonDelete.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event){
+				System.out.println("delete was pressed.");
+			}
+			
+		});
+		
 		
 		Button buttonSave = new Button(" Save ");
 		buttonSave.setAlignment(Pos.BOTTOM_RIGHT);
 		buttonSave.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonSave.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event){
+				System.out.println("save was pressed.");
+			}
+			
+		});
 		
-		Button buttonCancel = new Button("Cancel");
-		buttonCancel.setAlignment(Pos.BOTTOM_RIGHT);
-		buttonCancel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		foot.getChildren().addAll(buttonDelete, buttonSave, buttonCancel);
+		Button buttonQuit = new Button("Quit");
+		buttonQuit.setAlignment(Pos.BOTTOM_RIGHT);
+		buttonQuit.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonQuit.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event){
+				System.out.println("quit was pressed.");
+			}
+			
+		});
+		foot.getChildren().addAll(buttonDelete, buttonSave, buttonQuit);
 		
 		return foot;
 	}
@@ -130,27 +153,42 @@ public class Visual extends Application{
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(10, 10, 10, 10));
-		
+		grid.setPadding(new Insets(0, 10, 10, 10));
+		grid.setMinSize(400, 300);
+		grid.setAlignment(Pos.TOP_LEFT);
 		Label empName = new Label("Employee Name:");
 		Label position = new Label("Position:");
 		Label altPosition = new Label("Alternate Position:");
 		Label cell = new Label("Cell Phone");
 		TextField name = new TextField();
+		name.setPromptText("New Employee Name");
 		TextField cellp = new TextField();
 		
 		ObservableList<String> poslist = FXCollections.observableArrayList("position1", "Position2", "position3");  
-		ComboBox positions = new ComboBox(poslist);
+		ComboBox<String> positions = new ComboBox<String>(poslist);
 		
-		ComboBox altPositions = new ComboBox(poslist);
+		positions.getSelectionModel().select(0);
+		positions.setPrefWidth(150);
 		
+		ComboBox<String> altPositions = new ComboBox<String>(poslist);
+		altPositions.setPrefWidth(150);
+		altPositions.getSelectionModel().select(0);
 		grid.add(empName, 0,0);
 		grid.add(name, 1,0);
 		grid.add(position, 0, 1);
 		grid.add(positions, 1,1);
 		grid.add(altPosition, 0, 2);
 		grid.add(altPositions, 1, 2);
-		
+		grid.add(cell, 0,3);
+		grid.add(cellp,  1, 3);
+		//grid.setGridLinesVisible(true);
 		return grid;
+	}
+	private static GridPane createCheckboxes(){
+		GridPane boxes = new GridPane();
+		
+		boxes.setGridLinesVisible(true);
+		
+		return boxes;
 	}
 }

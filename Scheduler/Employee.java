@@ -76,7 +76,7 @@ public class Employee /* implements Serializable */{
 	 * @return void
 	 */
 	public static void removeEmployee(File toRemove) {
-		
+		//TODO how to remove a file
 	}
 
 	
