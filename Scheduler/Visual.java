@@ -116,19 +116,22 @@ public class Visual extends Application{
 		BorderPane emp = new BorderPane();
         emp.setPadding(new Insets(10, 10, 10, 10));
 		ListView<String> empList = new ListView<String>();
-		ObservableList<String> list = FXCollections.observableArrayList("+add new", "name1", "name2", "name3", "name4", "name5", "name6");
-		
+		ObservableList<String> list = FXCollections.observableArrayList("+add new", "name", "name2", "name3", "name4", "name5", "name6");
+		//The items below need to be set to load the contents of Employee Folder 
+		//instead of above list.
 		empList.setItems(list);
-		empList.getSelectionModel().select(0);
+		empList.getSelectionModel().select(1);
 		empList.setMaxHeight(300);
 	    empList.setPrefWidth(150.0);
-	    //TODO: set default focus to selected item in empList upon launch.
-	    //empList.requestFocus();
-	    
-		emp.setLeft(empList);
+	    empList.requestFocus();
+	    //TODO: get empList.requestFocus() to focus on selected item in list
+	    //TODO: look into action listeners to use get selected item and load the employee
+	    //      data into text fields, changing data when different employee is selected from list.
+	    emp.setLeft(empList);
 		emp.setCenter(addFormFields());
 		emp.setBottom(createButtonRow());
 		emp.setRight(createCheckboxes());
+		
 		return emp;
 	}
 	private Pane schPane(){
@@ -165,6 +168,13 @@ public class Visual extends Application{
 		buttonSave.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
 				System.out.println("save was pressed.");
+				//create person with the data currently in text fields.
+				Employee person = new Employee(/*get data currently in text fields*/);
+				//save the Employee as a new file 
+				Employee.editEmployee(person);
+				
+				//TODO: refresh list of employees in list view.
+				
 			}
 			
 		});

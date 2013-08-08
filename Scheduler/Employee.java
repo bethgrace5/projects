@@ -23,7 +23,7 @@ import javafx.application.Application;
 
 public class Employee /* implements Serializable */{
 	// private static final long serialVersionUID = 655451095884888984L;
-	private static String home = System.getProperty("user.home");
+	public static String home = System.getProperty("user.home");
 	String name;
 	String position;
 	String altPosition;
@@ -84,8 +84,9 @@ public class Employee /* implements Serializable */{
 		Employee tester = new Employee("name", "position",
 				"altPosition");
 		editEmployee(tester);
+		Event.loadEmployee("name");
 		Visual.launchGUI();
-		//TODO: Launch Visual from main in Employee.
+		
 		
 	}
 
