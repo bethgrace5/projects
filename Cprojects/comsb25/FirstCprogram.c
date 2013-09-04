@@ -14,7 +14,9 @@ int main(void){
 	int first, second, next, counter, i;
 	int numbers[100];
 	
-	//first is the lowerbound, second is the upperbound.
+	printf("Enter lowerbound, then Upperbound, followed by
+		any numbers to test in the range.\n");
+
 	scanf("%d%d",&first, &second);
 	
 	while(scanf("%d", &next) != EOF){
