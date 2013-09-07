@@ -1,5 +1,8 @@
 package Scheduler;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -37,6 +40,11 @@ import javafx.scene.layout.VBox;
  */
 
 public class Visual extends Application{
+	static File folder = new File(Employee.home + "\\Documents\\Employees\\");
+	static File[] listOfFiles = folder.listFiles();
+	static ListView<String> empList = new ListView<String>();
+
+	
 	static Label[] weekdays ={new Label("Monday"), new Label("Tuesday"), new Label("Wednesday"),
 			new Label("Thursday"), new Label("Friday"), new Label("Saturday"), new Label("Sunday")};
 	static Label[] shifts = {new Label("s1"), new Label("c1"), new Label("c2"), new Label("c3"), 
@@ -115,15 +123,13 @@ public class Visual extends Application{
 		//List of existing employees
 		BorderPane emp = new BorderPane();
         emp.setPadding(new Insets(10, 10, 10, 10));
-		ListView<String> empList = new ListView<String>();
-		ObservableList<String> list = FXCollections.observableArrayList("+add new", "name", "name2", "name3", "name4", "name5", "name6");
-		//The items below need to be set to load the contents of Employee Folder 
-		//instead of above list.
-		empList.setItems(list);
+
+		refreshList();
 		empList.getSelectionModel().select(1);
 		empList.setMaxHeight(300);
 	    empList.setPrefWidth(150.0);
 	    empList.requestFocus();
+	    
 	    //TODO: get empList.requestFocus() to focus on selected item in list
 	    //TODO: look into action listeners to use get selected item and load the employee
 	    //      data into text fields, changing data when different employee is selected from list.
@@ -169,11 +175,11 @@ public class Visual extends Application{
 			public void handle(ActionEvent event){
 				System.out.println("save was pressed.");
 				//create person with the data currently in text fields.
-				Employee person = new Employee(/*get data currently in text fields*/);
+				//Employee person = new Employee(/*get data currently in text fields*/);
 				//save the Employee as a new file 
-				Employee.editEmployee(person);
+				//Employee.editEmployee(person);
 				
-				//TODO: refresh list of employees in list view.
+				refreshList();
 				
 			}
 			
@@ -273,5 +279,14 @@ public class Visual extends Application{
 		
 		
 		return grid;
+	}
+	public static void refreshList(){
+		ObservableList<String> listCurrentEmployees = FXCollections.observableArrayList();
+		listCurrentEmployees.add("+add new");
+		for(int i=0; i<listOfFiles.length; i++){
+			listCurrentEmployees.add(listOfFiles[i].getName());
+		}
+		empList.setItems(listCurrentEmployees);
+		return;
 	}
 }
