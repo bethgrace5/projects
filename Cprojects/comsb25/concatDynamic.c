@@ -33,8 +33,10 @@ char *concatStrDynamic(char *string1, char *string2){
 	//allocate enough space for both strings and an ending NULL
 	char *ptr = malloc(count1 + count2 +1);
 
+	//add contents of string1 to ptr
 	for(i=0; i<count1; i++)
 		*(ptr + i)=*(string1 + i);
+	//add contents of string2 to ptr
 	for(i=0; i<count2; i++)
 		*(ptr + count1 + i)=*(string2 + i);
 	//set final character of concatenation to NULL
