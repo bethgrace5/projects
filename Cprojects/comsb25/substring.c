@@ -42,6 +42,9 @@ int main(){
 			len++;
 		}
 		printf("\b^");
+		//I need to advance the length farther than just the length of
+		//the string to compensate for extra characters.
+		//len += (strlen(big) - 
 
 		//printf("len:%d\n count:%d\n", len, count);
 		count++;
