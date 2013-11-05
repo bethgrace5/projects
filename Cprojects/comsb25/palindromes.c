@@ -45,8 +45,9 @@ void readLexicon(void){
 * @param: reverseWord- pointer to string for reverse of word.
 */
 void reverseWord(char *word, char *reverseWord){
-	int k, t;
-	for(k=0,t=strlen(word); k<strlen(word) || t>= 0 ; k++, t--){
+	int k;
+	int t = strlen(word);
+	for(k=0, k<t || t>= 0 ; k++, t--){
 		reverseWord[k] = word[t-1];
 	}
 	return;
