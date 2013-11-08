@@ -19,13 +19,13 @@ int main(){
 
     char *name = malloc(sizeof(int)*32);
     char *tmpname = malloc(sizeof(int)*32);
-    int sndr = 1;
-    int rcvr = 1;
+    int isSender = 1;
+    int isReceiver = 1;
     int i = 0;
     double total = 0;
     Transaction data;
+    int numberTransactions = sizeof(transactions)/sizeof(transactions[i]);
 
-    // Note: "count" is determined from the output of createStruct.c
     printf("Number of Transactions = %d\n", count);
     printf("Enter name: ");
     scanf("%s", tmpname);
@@ -40,18 +40,18 @@ int main(){
 
     //search list of transactions created by createStruct.c for the name
     //and record net change for the name
-    for(i=0; i<count; i++){
+    for(i=0; i<numberTransactions; i++){
         data = transactions[i];
-        sndr = strcmp(data.sender, name);   //set to zero if strings equal
-        rcvr = strcmp(data.receiver, name); //set to zero if strings equal
+        isSender = strcmp(data.sender, name);     //set to zero if equal
+        isReceiver = strcmp(data.receiver, name); //set to zero if equal
         
-        if(sndr == 0){
+        if(isSender == 0){
             total -= data.amount;
-            sndr = 1; //reset sndr 
+            isSender = 1; //reset isSender 
         }
-        else if(rcvr == 0){
+        else if(isReceiver == 0){
             total += data.amount;
-            rcvr = 1; //reset rcvr
+            isReceiver = 1; //reset isReceiver
         }
 
         //if the name is not found in any transactions
