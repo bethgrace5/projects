@@ -29,6 +29,32 @@ public:
     * @return course name
     */
    string getCourseName();
+  
+   /*
+    * Sets instructor name to instructorName
+    * @param instructorName the instructor name
+    */
+   void setInstructorName( string instructorName );
+
+   /*
+    * Returns instructor name
+    * @return instructor name
+    */
+   string getInstructorName();
+
+   /*
+    * adds a student to "TODO student vector"
+    * @param StudentName the student name
+    */
+   void addStudent( string Studentname );
+
+   /*
+    * prints current version of gradebook 
+    */
+   void printGradeBook( void );
+
 private:
    string courseName;
+   string instructorName;
+   // TODO: add a vector of class Student
 };
