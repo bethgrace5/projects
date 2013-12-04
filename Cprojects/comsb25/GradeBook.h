@@ -1,4 +1,7 @@
 #include <string>
+#include <vector>
+#include "Student.h"
+
 using namespace std;
 
 /**
@@ -46,7 +49,7 @@ public:
     * adds a student to "TODO student vector"
     * @param StudentName the student name
     */
-   void addStudent( string Studentname );
+   void addStudent( string name );
 
    /*
     * prints current version of gradebook 
@@ -54,7 +57,9 @@ public:
    void printGradeBook( void );
 
 private:
-   string courseName;
-   string instructorName;
+   static string courseName;
+   static string instructorName;
+   static int count;
    // TODO: add a vector of class Student
+   static vector<Student::Student> students;
 };

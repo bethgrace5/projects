@@ -1,5 +1,6 @@
 
 #include <string>
+
 using namespace std;
 
 /**
@@ -12,25 +13,31 @@ using namespace std;
  */
 
 class Student {
+
 public:
    /*
     * Constructs a Student object with name studentName
     * @param studentName the student name
     */
-   Student(string);
+   Student( string name )
+    { setStudentName( name ); }
 
    /*
     * Sets Student name to studentName
     * @param studentName the student's name
     */
-   void setStudentName( string );
+   void setStudentName( string name )
+        { studentName =  name; }
 
    /*
     * Returns Student name
     * @return studentName
     */
-   string getStudentName( void );
+   string getStudentName( void ) const
+        { return studentName; }
+
 
 private:
+    string studentName;
 
 };

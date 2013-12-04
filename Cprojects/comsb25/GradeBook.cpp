@@ -1,11 +1,10 @@
 #include <iostream>
 #include "GradeBook.h"
-#include "Student.h"
+
 using namespace std;
 
 /**
- * This file contains the function implementations for classes GradeBook
- * and Student.
+ * This file contains the function implementations for classe GradeBook
  *
  * @author        Bethany Armitage 
  * Course:        COMS B25
@@ -17,17 +16,8 @@ GradeBook::GradeBook( string name ){
    setCourseName( name );
 }
 
-Student::Student( string name ){
-    setStudentName( name );
-}
-
 void GradeBook::setCourseName( string name ){
       courseName = name;
-      // Instructed to remove character limit
-}
-
-void Student::setStudentName( string name ){
-      studentName = name;
       // Instructed to remove character limit
 }
 
@@ -39,27 +29,24 @@ string GradeBook::getCourseName(){
    return courseName;
 }
 
-string Student::getStudentName(){
-   return studentName;
-}
-
 string GradeBook::getInstructorName(){
     return instructorName;
 }
 
-void GradeBook::addstudent( string name ){
-    setStudentName( name );
-    // TODO add studentName to vector of class student
-    // vectorspot = Student.studentName 
-    // advance vector spot?
+void GradeBook::addStudent( string name ){
+    Student person = Student(name);
+    GradeBook::students[GradeBook::count] = person;
+    GradeBook::count++;
 }
 
 void printGradeBook(){
-    cout << Course: << getCourseName() endl;
-    cout << Instructor: << getInstructorName() endl;
-    cout << Students endl;
     
-    for(int i=0; i< /*TODO sizeof vector*/; i++){
-        cout << /*TODO get vectorspot[i]*/ endl;
+    cout << "Course:" << GradeBook::getCourseName(students[0]) << endl;
+    cout << "Instructor:" << GradeBook::getInstructorName(students[0]) 
+        << endl;
+    cout << "Students" << endl;
+    
+    for(int i=0; i< GradeBook::students.size(); i++){
+        cout << GradeBook::students[i] << endl;
     }
 }
