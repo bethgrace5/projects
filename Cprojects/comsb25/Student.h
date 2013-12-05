@@ -24,7 +24,7 @@ public:
 
    /*
     * Sets Student name to studentName
-    * @param studentName the student's name
+    * @param studentName the student name
     */
    void setStudentName( string name )
         { studentName =  name; }

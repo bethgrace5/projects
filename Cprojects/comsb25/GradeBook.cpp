@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "GradeBook.h"
 
 using namespace std;
@@ -13,20 +14,19 @@ using namespace std;
  */
 
 GradeBook::GradeBook( string name ){
-   setCourseName( name );
+    setCourseName( name );
 }
 
 void GradeBook::setCourseName( string name ){
-      courseName = name;
-      // Instructed to remove character limit
+    courseName = name;
 }
 
-void GradeBook::setInstructorName( string name){
+void GradeBook::setInstructorName( string name ){
     instructorName = name;
 }
 
 string GradeBook::getCourseName(){
-   return courseName;
+    return courseName;
 }
 
 string GradeBook::getInstructorName(){
@@ -34,19 +34,20 @@ string GradeBook::getInstructorName(){
 }
 
 void GradeBook::addStudent( string name ){
-    Student person = Student(name);
-    GradeBook::students[GradeBook::count] = person;
-    GradeBook::count++;
+    Student person = Student( name );
+    students.insert(students.end(),person);
 }
 
-void printGradeBook(){
+void GradeBook::printGradeBook( void ){
     
-    cout << "Course:" << GradeBook::getCourseName(students[0]) << endl;
-    cout << "Instructor:" << GradeBook::getInstructorName(students[0]) 
-        << endl;
+    cout << "Course: " << GradeBook::getCourseName() << endl;
+    cout << "Instructor: " << GradeBook::getInstructorName() << endl;
+    cout << endl;
     cout << "Students" << endl;
     
-    for(int i=0; i< GradeBook::students.size(); i++){
-        cout << GradeBook::students[i] << endl;
+    for(unsigned int i=0; i< GradeBook::students.size(); i++){
+        cout << " "<< (i+1) << ". " << students[i].getStudentName();
+        cout << endl;
+        
     }
 }

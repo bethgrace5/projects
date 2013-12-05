@@ -46,7 +46,7 @@ public:
    string getInstructorName();
 
    /*
-    * adds a student to "TODO student vector"
+    * adds a student to vector students
     * @param StudentName the student name
     */
    void addStudent( string name );
@@ -57,9 +57,7 @@ public:
    void printGradeBook( void );
 
 private:
-   static string courseName;
-   static string instructorName;
-   static int count;
-   // TODO: add a vector of class Student
-   static vector<Student::Student> students;
+   string courseName;
+   string instructorName;
+   vector <Student> students;
 };
