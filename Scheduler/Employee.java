@@ -37,7 +37,8 @@ public class Employee {
 		this.name = name;
 		this.position = position;
 		this.altPosition = altPosition;
-		File file = new File(home + "\\Documents\\Employees\\" + name + ".txt");
+		File file = new File(home + File.separator +"Documents"+
+					File.separator +"Employees"+ File.separator + name + ".txt");
 		writeDataToFile(file, name, position, altPosition);
 	}
 
@@ -72,8 +73,8 @@ public class Employee {
 	 */
 	public static void editEmployee(Employee person)
 			throws FileNotFoundException {
-		File nameFile = new File(home + "\\Documents\\Employees\\"
-				+ person.name + ".txt");
+		File nameFile = new File(home + File.separator + "Documents" + File.separator + "Employees"
+				+ File.separator + person.name + ".txt");
 		PrintWriter out = new PrintWriter(nameFile);
 		//Later the name, position, and alternate position will be
 		//loaded into the form instead of printed out.

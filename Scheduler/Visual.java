@@ -44,7 +44,8 @@ import javafx.scene.layout.VBox;
  */
 
 public class Visual extends Application{
-	static File folder = new File(Employee.home + "\\Documents\\Employees\\");
+	static File folder = new File(Employee.home + File.separator + 
+				"Documents" + File.separator + "Employees" + File.separator);
 	static File[] listOfFiles = folder.listFiles();
 	static ListView<String> empList = new ListView<String>();
 	static ArrayList<Employee> currentEmployees = new ArrayList<Employee>(Employee.numFiles);
