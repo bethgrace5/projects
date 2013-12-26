@@ -26,21 +26,33 @@ import javafx.application.Application;
 
 public class Employee {
 	public static String home = System.getProperty("user.home");
+	public static int numFiles;
 	String name;
 	String position;
 	String altPosition;
 	
+	
 	// construct Employee with two possible positions
-	Employee(String name, String position, String altPosition) {
+	Employee(String name, String position, String altPosition) throws FileNotFoundException {
 		this.name = name;
 		this.position = position;
 		this.altPosition = altPosition;
+		File file = new File(home + "\\Documents\\Employees\\" + name + ".txt");
+		writeDataToFile(file, name, position, altPosition);
 	}
 
 	// construct Employee with one possible position
 	Employee(String name, String position) {
 		this.name = name;
 		this.position = position;
+	}
+	
+	private void writeDataToFile(File file, String name, String position, String altPosition) throws FileNotFoundException{
+		PrintWriter out = new PrintWriter(file);
+		out.println(name);
+		out.println(position);
+		out.println(altPosition);
+		out.close();
 	}
 
 	/** TODO: read a file for an existing employee.
@@ -65,11 +77,8 @@ public class Employee {
 		PrintWriter out = new PrintWriter(nameFile);
 		//Later the name, position, and alternate position will be
 		//loaded into the form instead of printed out.
-		out.println("*name");
 		out.println(person.name);
-		out.println("*position");
 		out.println(person.position);
-		out.println("*alternate position");
 		out.println(person.altPosition);
 		out.close();
 		return;
@@ -102,11 +111,13 @@ public class Employee {
 				"Alternate1");
 		Employee tester2 = new Employee("Name2", "Position2",
 				"Alternate2");
+		File employees = new File(home + "\\Documents\\Employees\\");
+		numFiles = employees.listFiles().length;
+		Event.populateCurrentEmployees();
 		editEmployee(tester1);
 		editEmployee(tester2);
-		Event.loadEmployee(tester1);
-		Event.loadEmployee(tester2);
-		removeEmployee(tester1);
+		
+		
 		Visual.launchGUI();
 		
 		

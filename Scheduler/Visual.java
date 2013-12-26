@@ -3,6 +3,9 @@ package Scheduler;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,6 +25,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -43,13 +47,23 @@ public class Visual extends Application{
 	static File folder = new File(Employee.home + "\\Documents\\Employees\\");
 	static File[] listOfFiles = folder.listFiles();
 	static ListView<String> empList = new ListView<String>();
-
+	static ArrayList<Employee> currentEmployees = new ArrayList<Employee>(Employee.numFiles);
+	
+	/*empList.setOnMouseClicked(new EventHandler<mouseEvent>(){
+		public void handle(MouseEvent event){
+			
+			System.out.println("clicked on" + empList.getSelectionModel().getSelectedItem());
+		}
+	});*/
+	
 	
 	static Label[] weekdays ={new Label("Monday"), new Label("Tuesday"), new Label("Wednesday"),
 			new Label("Thursday"), new Label("Friday"), new Label("Saturday"), new Label("Sunday")};
 	static Label[] shifts = {new Label("s1"), new Label("c1"), new Label("c2"), new Label("c3"), 
 		new Label("c4"), new Label("p1"), new Label("p2")};
 	
+	//TODO: change CheckBoxes to clickable color boxes
+	//		green=available, yellow=not preferable, red=unavailable 
 	static CheckBox [] s1 = {new CheckBox(), new CheckBox(), new CheckBox(),
 		new CheckBox(), new CheckBox(), new CheckBox()};
 	
@@ -77,17 +91,8 @@ public class Visual extends Application{
 	}
 	/**
 	 * JavaFX uses main() in Employee to launch start(). this method uses several other methods 
-	 * to build GUI.
-	 * From the top down:
-	 * -Stage is set (JavaFX for Window)
-	 * -within stage is a Scene
-	 * -the Scene contains a tabPane
-	 * -Each tab in the TabPane has its own Border Pane
-	 * -the BorderPanes are sectioned off into various other panes
-	 *   (Hbox, Vbox, GridPane, )
-	 * - Each pane has its own contents (Labels, FormFields, Buttons etc). 
+	 * to build GUI. 
 	 * @param: Stage primaryStage -the Stage is the Window.
-	 * @return: void
 	 */
 	@Override
 	public void start(Stage primaryStage) {
@@ -117,7 +122,7 @@ public class Visual extends Application{
 	}
 	/**
 	 * Creates Content for Employee tab
-	 * @return: emp BorderPane
+	 * @return:emp BorderPane
 	 */
 	private Pane empPane(){
 		//List of existing employees
@@ -125,10 +130,13 @@ public class Visual extends Application{
         emp.setPadding(new Insets(10, 10, 10, 10));
 
 		refreshList();
+		//empList.getSelectionModel().selectedItemProperty().addListener(Event.selectedEmployee());
+		
 		empList.getSelectionModel().select(1);
 		empList.setMaxHeight(300);
 	    empList.setPrefWidth(150.0);
 	    empList.requestFocus();
+	    
 	    
 	    //TODO: get empList.requestFocus() to focus on selected item in list
 	    //TODO: look into action listeners to use get selected item and load the employee
@@ -140,6 +148,10 @@ public class Visual extends Application{
 		
 		return emp;
 	}
+	/**
+	 * Unfinished content for Schedule Tab
+	 * @return:sch 
+	 */
 	private Pane schPane(){
 		BorderPane sch = new BorderPane();
 		sch.setPadding(new Insets(10, 10, 10, 10));
@@ -153,48 +165,10 @@ public class Visual extends Application{
 	 * @return: foot HBOx, the footer of buttons
 	 */
 	private static HBox createButtonRow(){
-
 		HBox foot = new HBox();
 		foot.setPadding(new Insets(10, 20, 10, 20));
-		foot.setSpacing(10);
-		Button buttonDelete = new Button("Delete");
-		buttonDelete.setAlignment(Pos.BOTTOM_RIGHT);
-		buttonDelete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		buttonDelete.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent event){
-				System.out.println("delete was pressed.");
-			}
-			
-		});
-		
-		
-		Button buttonSave = new Button(" Save ");
-		buttonSave.setAlignment(Pos.BOTTOM_RIGHT);
-		buttonSave.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		buttonSave.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent event){
-				System.out.println("save was pressed.");
-				//create person with the data currently in text fields.
-				//Employee person = new Employee(/*get data currently in text fields*/);
-				//save the Employee as a new file 
-				//Employee.editEmployee(person);
-				
-				refreshList();
-				
-			}
-			
-		});
-		
-		Button buttonQuit = new Button("Quit");
-		buttonQuit.setAlignment(Pos.BOTTOM_RIGHT);
-		buttonQuit.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		buttonQuit.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent event){
-				System.out.println("quit was pressed.");
-			}
-			
-		});
-		foot.getChildren().addAll(buttonDelete, buttonSave, buttonQuit);
+		foot.setSpacing(10);	
+		foot.getChildren().addAll(Event.addButtonDelete(), Event.addButtonSave(), Event.addButtonQuit());
 		//TODO move buttons to the far right
 		return foot;
 	}
@@ -240,6 +214,10 @@ public class Visual extends Application{
 		//grid.setGridLinesVisible(true);
 		return grid;
 	}
+	/**
+	 *adds all the checkBox arrays in a GridPane
+	 * @return boxes GridPane
+	 */
 	private static GridPane createCheckboxes(){
 		GridPane boxes = new GridPane();
 		boxes.setHgap(10);
@@ -265,6 +243,10 @@ public class Visual extends Application{
 		//boxes.setGridLinesVisible(true);
 		return boxes;
 	}
+	/**
+	 * Creates Text area to unfinished Schedule Tab
+	 * @return text textArea
+	 */
 	private static TextArea text(){
 		TextArea text = new TextArea();
 		//text.setEditable(true);
@@ -272,19 +254,23 @@ public class Visual extends Application{
 		text.setPromptText("Notes, Reminders, Comments, Events . . . ");
 		return text;
 	}
+	/**
+	 * Skeleton for a visual schedule
+	 * @return grid gridPane
+	 */
 	private static GridPane schedule(){
 		GridPane grid = new GridPane();
-		
-		
-		
-		
 		return grid;
 	}
+	/**
+	 * refreshes the observable list- useful after new employee is added or one is updated.
+	 */
 	public static void refreshList(){
+		//TODO: re-count numFiles as it should have changed if a file was added/deleted
 		ObservableList<String> listCurrentEmployees = FXCollections.observableArrayList();
 		listCurrentEmployees.add("+add new");
-		for(int i=0; i<listOfFiles.length; i++){
-			listCurrentEmployees.add(listOfFiles[i].getName());
+		for(int i=0; i<Employee.numFiles; i++){
+			listCurrentEmployees.add(currentEmployees.get(i).name);
 		}
 		empList.setItems(listCurrentEmployees);
 		return;
