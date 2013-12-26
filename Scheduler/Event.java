@@ -46,10 +46,11 @@ public class Event {
 		buttonQuit.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		buttonQuit.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
+			if(JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?", 
+				"Confirm Delete", JOptionPane.OK_CANCEL_OPTION)==0){
+				System.exit(0);
+			}
 				//TODO: make options only OK_CANCEL
-				if(JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?")==0){
-					System.exit(0);
-				}
 			}
 			
 		});
