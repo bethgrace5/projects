@@ -28,31 +28,34 @@ public class Employee {
 	public static String home = System.getProperty("user.home");
 	public static int numFiles;
 	String name;
-	String position;
-	String altPosition;
+	int position;
+	int altPosition;
+	String contact;
 	
 	
 	// construct Employee with two possible positions
-	Employee(String name, String position, String altPosition) throws FileNotFoundException {
+	Employee(String name, int position, int altPosition, String contact) throws FileNotFoundException {
 		this.name = name;
 		this.position = position;
 		this.altPosition = altPosition;
+		this.contact = contact;
 		File file = new File(home + File.separator +"Documents"+
 					File.separator +"Employees"+ File.separator + name + ".txt");
-		writeDataToFile(file, name, position, altPosition);
+		writeDataToFile(file, name, position, altPosition, contact);
 	}
 
 	// construct Employee with one possible position
-	Employee(String name, String position) {
+	Employee(String name, int position) {
 		this.name = name;
 		this.position = position;
 	}
 	
-	private void writeDataToFile(File file, String name, String position, String altPosition) throws FileNotFoundException{
+	private void writeDataToFile(File file, String name, int position, int altPosition, String contact) throws FileNotFoundException{
 		PrintWriter out = new PrintWriter(file);
 		out.println(name);
 		out.println(position);
 		out.println(altPosition);
+		out.println(contact);
 		out.close();
 	}
 
@@ -81,6 +84,7 @@ public class Employee {
 		out.println(person.name);
 		out.println(person.position);
 		out.println(person.altPosition);
+		out.println(person.contact);
 		out.close();
 		return;
 	}
@@ -108,10 +112,8 @@ public class Employee {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		Employee tester1 = new Employee("Name1", "Position1",
-				"Alternate1");
-		Employee tester2 = new Employee("Name2", "Position2",
-				"Alternate2");
+		Employee tester1 = new Employee("Name1", 1,1, "1234567890");
+		Employee tester2 = new Employee("Name2", 2,2, "9987654321");
 		File employees = new File(home + "\\Documents\\Employees\\");
 		numFiles = employees.listFiles().length;
 		Event.populateCurrentEmployees();

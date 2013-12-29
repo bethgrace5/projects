@@ -1,5 +1,7 @@
 package Scheduler;
 
+import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -12,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.input.InputEvent;
 
 public class Event {
 	private Employee current;
@@ -24,6 +27,7 @@ public class Event {
 		Button buttonSave = new Button(" Save ");
 		buttonSave.setAlignment(Pos.BOTTOM_RIGHT);
 		buttonSave.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonSave.setMinWidth(60.0);
 		buttonSave.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
 				System.out.println("save was pressed.");
@@ -41,9 +45,11 @@ public class Event {
 	 * @return buttonQuit button
 	 */
 	static Button addButtonQuit(){
+		//TODO: fix button letter spacing
 		Button buttonQuit = new Button("Quit");
 		buttonQuit.setAlignment(Pos.BOTTOM_RIGHT);
 		buttonQuit.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonQuit.setMinWidth(60.0);
 		buttonQuit.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
 				if(JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?", 
@@ -64,6 +70,7 @@ public class Event {
 		Button buttonDelete = new Button("Delete");
 		buttonDelete.setAlignment(Pos.BOTTOM_RIGHT);
 		buttonDelete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		buttonDelete.setMinWidth(60.0);
 		buttonDelete.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
 				//TODO: implement action to remove file of selected employee, and refresh list.
@@ -80,22 +87,20 @@ public class Event {
 	public static void populateCurrentEmployees() throws FileNotFoundException{
 		for(int i=0; i<Employee.numFiles; i++){
 			Scanner in = new Scanner(Visual.listOfFiles[i]); 
-			Employee next = new Employee(in.next(), in.next(), in.next());
+			Employee next = new Employee(in.next(), in.nextInt(), in.nextInt(), in.next());
 			Visual.currentEmployees.add(next);
 			in.close();
 		}
-	}
+	}		
+}	
+		
+		
+		
 	//TODO: Add listener to listen for selected item in List View empList
 	//using the list currentEmployees to reference current Employees,
 	//and fill in the text fields with the data of the selected employee.
 	
-	/*public static ChangeListener<? super String> selectedEmployee() {
-		
-		
-		
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-}
+
 	
+
 	

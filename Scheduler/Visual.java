@@ -1,5 +1,6 @@
 package Scheduler;
 
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -49,13 +51,13 @@ public class Visual extends Application{
 	static File[] listOfFiles = folder.listFiles();
 	static ListView<String> empList = new ListView<String>();
 	static ArrayList<Employee> currentEmployees = new ArrayList<Employee>(Employee.numFiles);
+	String selectedItem = null;
+	int selectedIndex = 1;
+	private static TextField name;
+	private static TextField phone;
+	private static ComboBox<String> positions;
+	private static ComboBox<String> altPositions;
 	
-	/*empList.setOnMouseClicked(new EventHandler<mouseEvent>(){
-		public void handle(MouseEvent event){
-			
-			System.out.println("clicked on" + empList.getSelectionModel().getSelectedItem());
-		}
-	});*/
 	
 	
 	static Label[] weekdays ={new Label("Monday"), new Label("Tuesday"), new Label("Wednesday"),
@@ -114,7 +116,11 @@ public class Visual extends Application{
 		
 		tabs.getTabs().addAll(employee, schedule);
 		
-		Scene scene = new Scene(tabs, 900, 350);
+		Scene scene = new Scene(tabs, 900, 400);
+		primaryStage.setMinWidth(900);
+		primaryStage.setMinHeight(400);
+		primaryStage.setMaxWidth(900);
+		primaryStage.setMaxHeight(400);
 		primaryStage.setTitle("Employee Staff Management");
 		//Change title when tabs change (After Implementing Events and Actions.
 		//primaryStage.setTitle("Employee Staff Management");
@@ -131,17 +137,50 @@ public class Visual extends Application{
         emp.setPadding(new Insets(10, 10, 10, 10));
 
 		refreshList();
-		//empList.getSelectionModel().selectedItemProperty().addListener(Event.selectedEmployee());
 		
-		empList.getSelectionModel().select(1);
+		empList.getSelectionModel().select(0);
 		empList.setMaxHeight(300);
 	    empList.setPrefWidth(150.0);
 	    empList.requestFocus();
+	    empList.addEventHandler(MouseEvent.MOUSE_CLICKED, 
+	   	new EventHandler<MouseEvent>(){
+	    	public void handle(MouseEvent e){
+	    		//the if statement is to avoid an infinite loop for now
+	    		//though there's probably a better way- need to look at event.consume().
+    			if(empList.getSelectionModel().getSelectedIndex() == selectedIndex){
+	    		}
+    			else{
+	   				selectedItem = empList.getSelectionModel().getSelectedItem();
+	   				selectedIndex = empList.getSelectionModel().getSelectedIndex();
+	   				System.out.println(selectedItem);
+	   				
+	   				//if "+add new" option is selected fill in appropriate prompt text.
+	   				  if (selectedItem.equals("+add new")){
+	   					name.clear();
+	   					phone.clear();
+	   					name.setPromptText("Enter new name");
+	   					phone.setPromptText("Enter contact number");
+   						positions.getSelectionModel().select(0);
+   						altPositions.getSelectionModel().select(0);
+	   					}
+	   				
+	   				//search through the list of current Employees for selected Item in list.
+	   				for(int j=0; j<currentEmployees.size(); j++){
+		
+	   					if(currentEmployees.get(j).name.equals(selectedItem)){
+	   						System.out.println("match");
+	   						name.setText(currentEmployees.get(j).name);
+	   						phone.setText(currentEmployees.get(j).contact);
+	   						positions.getSelectionModel().select(currentEmployees.get(j).position);
+	   						altPositions.getSelectionModel().select(currentEmployees.get(j).altPosition);
+	   					}
+	   					
+	   				}
+    			}
+	   				
+	    }
+	   	});
 	    
-	    
-	    //TODO: get empList.requestFocus() to focus on selected item in list
-	    //TODO: look into action listeners to use get selected item and load the employee
-	    //      data into text fields, changing data when different employee is selected from list.
 	    emp.setLeft(empList);
 		emp.setCenter(addFormFields());
 		emp.setBottom(createButtonRow());
@@ -167,10 +206,9 @@ public class Visual extends Application{
 	 */
 	private static HBox createButtonRow(){
 		HBox foot = new HBox();
-		foot.setPadding(new Insets(10, 20, 10, 20));
+		foot.setPadding(new Insets(0, 20, 30, 650));
 		foot.setSpacing(10);	
 		foot.getChildren().addAll(Event.addButtonDelete(), Event.addButtonSave(), Event.addButtonQuit());
-		//TODO move buttons to the far right
 		return foot;
 	}
 	/**
@@ -184,24 +222,24 @@ public class Visual extends Application{
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(0, 10, 10, 40));
-		grid.setMinSize(100, 100);
+		grid.setMinSize(300, 100);
 		grid.setAlignment(Pos.TOP_LEFT);
 		Label empName = new Label("Employee Name:");
 		Label position = new Label("Position:");
 		Label altPosition = new Label("Alternate Position:");
 		Label cell = new Label("Contact");
-		TextField name = new TextField();
-		name.setPromptText("New Employee Name");
-		TextField cellp = new TextField();
+		name = new TextField();
+		phone = new TextField();
 		
-		ObservableList<String> poslist = FXCollections.observableArrayList("position1", "Position2", "position3");  
-		ComboBox<String> positions = new ComboBox<String>(poslist);
+		ObservableList<String> poslist = FXCollections.observableArrayList("", "position1", "Position2", "position3");  
+		positions = new ComboBox<String>(poslist);
 		
 		positions.getSelectionModel().select(0);
 		positions.setPrefWidth(150);
 		
-		ComboBox<String> altPositions = new ComboBox<String>(poslist);
+		altPositions = new ComboBox<String>(poslist);
 		altPositions.setPrefWidth(150);
+		altPositions.setMinWidth(150);
 		altPositions.getSelectionModel().select(0);
 		grid.add(empName, 0,0);
 		grid.add(name, 1,0);
@@ -210,7 +248,7 @@ public class Visual extends Application{
 		grid.add(altPosition, 0, 2);
 		grid.add(altPositions, 1, 2);
 		grid.add(cell, 0,3);
-		grid.add(cellp,  1, 3);
+		grid.add(phone,  1, 3);
 		
 		//grid.setGridLinesVisible(true);
 		return grid;
@@ -221,9 +259,11 @@ public class Visual extends Application{
 	 */
 	private static GridPane createCheckboxes(){
 		GridPane boxes = new GridPane();
+		//boxes.setGridLinesVisible(true);
 		boxes.setHgap(10);
 		boxes.setVgap(10);
 		boxes.setPadding(new Insets(0, 20, 0, 40));
+		
 	
 		for(int i =1; i<7; ++i){
 			boxes.add(weekdays[i-1], i, 0);
