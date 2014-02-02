@@ -28,7 +28,7 @@ void Lexicon::loadLexicon( string lexiconFileName){
     //string needs to be converted to char *ptr for open function
     in.open(lexiconFileName.c_str());
     if( in.fail() ){
-        cerr << "could not open file\n";
+        cerr << "could not open file " << lexiconFileName << endl;
         exit( 1 );
     }
     

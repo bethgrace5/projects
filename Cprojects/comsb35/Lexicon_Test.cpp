@@ -12,7 +12,7 @@
 using namespace std;
 
 int main() {
-	Lexicon lexicon("Enhanced North American Benchmark Lexicon.txt");
+	Lexicon lexicon("nhanced North American Benchmark Lexicon.txt");
 	string word;
 
 	cout << "Enter words to be checked. Enter EOF (Ctrl-z on Windows) when you are done\n";
