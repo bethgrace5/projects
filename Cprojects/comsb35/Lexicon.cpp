@@ -9,6 +9,7 @@
 */
 
 #include "Lexicon.h"
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -18,20 +19,36 @@ Lexicon::Lexicon( string lexiconFileName){
     Lexicon::loadLexicon(lexiconFileName);
 }
 
-Lexicon::loadLexicon( string lexiconFileName){
+void Lexicon::loadLexicon( string lexiconFileName){
     ifstream in;
+    string word;
     std::vector<string>::iterator it;
     
-    //string needs to be converted to char *ptr
+    //string needs to be converted to char *ptr for open function
     in.open(lexiconFileName.c_str());
+    if( in.fail() ){
+        cerr << "could not open file\n";
+        exit( 1 );
+    }
     
-    while(in << word)
-        Lexicon::lexicon.add(word);
-
+    else{ //add each word to vector lexicon
+        while(in >> word)
+        Lexicon::lexicon.push_back(word);
+    }
 }
 
-Lexicon::isWord(string word){
-    //iterate through Lexicon::lexicon vector
+bool Lexicon::isWord(string word){
+    // iterate vector linearly to check for match
+    vector<string>::iterator it;
+    string tmp;
+
+    for(it = lexicon.begin(); it < lexicon.end(); it++){
+        tmp = *it;
+        if( tmp.compare( word ) == 0 ){
+
+            return true;
+        }
+    }
+    return false;
     
 }
-
