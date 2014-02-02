@@ -26,6 +26,7 @@ int main(){
     //read strings until End of file is reached
     while( getline(cin, tempStr)){
         removeNonAlpha( tempStr );
+        cout << tempStr << endl;
     }
     return 0;
 }
@@ -38,18 +39,24 @@ int main(){
 */
 void removeNonAlpha( string& str){
     int length = str.length();
-    char c;
+    string tmp;
+    string c;
     int i;
     //check each character to see if it is a letter
     for ( i=0; i< length; i++){
         c = str.at(i);
-        if( (isUpperCaseLetter(c) || isLowerCaseLetter(c)) )
-            putchar(c); 
+        
+        if((isUpperCaseLetter(c.at(0)) || isLowerCaseLetter(c.at(0)))){
+          tmp.append(c); 
+        }
 
     //32 is the ASCII value for a space
-        if( (int) c == 32 )
-            putchar( c );
+        if( c.compare(" ") == 0 )
+        tmp.append(" ");
     }
+    cout << "tmp " << tmp << endl;
+    cout << "str " << str << endl;
+    str = tmp;
     cout << endl;
 }
 
