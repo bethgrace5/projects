@@ -2,7 +2,7 @@
 # Bethany Armitage
 # 
 # This program displays a portion of pascal's triangle
-# currently at < 70%
+# currently at  75%
 #
 # Register Usage:
 #    main:
@@ -18,33 +18,16 @@
 .ent main
     main:
     
-
+    li $s2, 6                   # default values if no args supplied
+    li $s3, 4
     
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
 
     li $t0, 3
-    blt $s0, $t0, arg_error     # check for two cmd line args
+    beq $s0, $t0, parse_args    # check for two cmd line args
+                                # parse and save in $s2 and $s3
     
-    lw $a0, 4($s1)              # parse first arg(n) and save
-    jal atoi
-    move $s2, $v0
-
-    lw $a0, 8($s1)              # parse second arg(k) and save
-    jal atoi
-    move $s3, $v0
-
-# utilize stl (set if less than)
-    move $a0, $s2               # prepare to swap
-    move $a1, $s3
-
-    move $v0, $s2               # set return registers if no swap
-    move $v1, $s3
-    blt $s2, $s3, swap          # swap if n<k
-    
-    move $s2, $v0               # n and k are now in order
-    move $s3, $v1
-
     move $a0, $s2               # display first argument
     li $v0, 1
     syscall
@@ -59,7 +42,8 @@
 
     jal print_linefeed
     
-   
+    li $v0, 10                  # exit program
+    syscall 
     
 
 
@@ -68,23 +52,27 @@
 
 .end main
 
-.ent arg_error
-    la $a0, err_ms             # print error messageg
-    li $v0, 4     
-    syscall
+.ent parse_args
+    parse_args:
+    lw $a0, 4($s1)              # parse first arg(n) and save
+    jal atoi
+    move $s2, $v0
 
-    jal print_linefeed
-    `
-    la $a0, use_msg            # print usage instructions
-    li $v0, 4
-    syscall
+    lw $a0, 8($s1)              # parse second arg(k) and save
+    jal atoi
+    move $s3, $v0
 
-    jal print_linefeed
+    slt $t0, $s2, $s3           # set $t0 to 1 if n < k
 
-    li $v0, 10                 # exit program
-    syscall
+    move $a0, $s2               # prepare to swap
+    move $a1, $s3
+    bnez $t0, swap              # branch if needed
+    
+    move $v0, $a0               # set return registers if no swap
+    move $s3, $v1
 
-.end arg_error
+    jr $ra
+.end parse_args
 
 .ent print_linefeed
 
@@ -93,12 +81,16 @@
     li $v0, 11
     syscall
 
+    jr $ra
+
 .end print_linefeed
 
 .ent swap
     swap:
         move $v0, $a1
         move $v1, $a0
+
+        jr $ra
 .end swap
     
 .ent atoi
@@ -116,7 +108,7 @@
         # read character
         lbu $t1, 0($a0)
 
-        finish when non-digit encountered
+        #finish when non-digit encountered
         bltu $t1, 48, finish
         bgtu $t1, 57, finish
 
