@@ -16,121 +16,121 @@
 
 .text
 .ent main
-    main:
+main:
     
-    li $s2, 6                   # default values if no args supplied
-    li $s3, 4
+    li   $s2, 6                 # default values if no args supplied
+    li   $s3, 4
     
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
 
-    li $t0, 3
-    beq $s0, $t0, parse_args    # check for two cmd line args
+    li   $t0, 3
+    beq  $a0, $t0, parse_args   # check for two cmd line args
                                 # parse and save in $s2 and $s3
     
-    move $a0, $s2               # display first argument
-    li $v0, 1
+    move $a0, $v0               # display first argument
+    li   $v0, 1
     syscall
     
-    li $a0, 32                  # print a space (32=ascii space)
-    li $v0, 11
+    li   $a0, 32                # print a space (32=ascii space)
+    li   $v0, 11
     syscall
 
-    move $a0, $s3               # display second argument
-    li $v0, 1
+    move $a0, $v1               # display second argument
+    li   $v0, 1
     syscall
 
     jal print_linefeed
     
-    li $v0, 10                  # exit program
+    li   $v0, 10                # exit program
     syscall 
     
-
-
-    
-
-
 .end main
 
 .ent parse_args
-    parse_args:
-    lw $a0, 4($s1)              # parse first arg(n) and save
-    jal atoi
+parse_args:
+    lw   $a0, 4($s1)            # parse first arg(n) and save
+    jal  atoi
     move $s2, $v0
 
-    lw $a0, 8($s1)              # parse second arg(k) and save
-    jal atoi
+    lw   $a0, 8($s1)            # parse second arg(k) and save
+    jal  atoi
     move $s3, $v0
 
-    slt $t0, $s2, $s3           # set $t0 to 1 if n < k
+    move $t0, $zero             # zero out $t0
+    slt  $t0, $s2, $s3          # set $t0 to 1 if n < k
 
     move $a0, $s2               # prepare to swap
     move $a1, $s3
-    bnez $t0, swap              # branch if needed
-    
-    move $v0, $a0               # set return registers if no swap
-    move $s3, $v1
 
-    jr $ra
+    move $v0, $s2               # retain values if not swapped
+    move $v1, $s3 
+
+    bnez $t0, swap              # branch if needed
+
+    move $s2, $v0               # values are in order now
+    move $s3, $v1               # if they were swapped or not
+
+    jr   $ra
 .end parse_args
 
 .ent print_linefeed
 
-    print_linefeed:
-    lb $a0, lf
-    li $v0, 11
+print_linefeed:
+    lb   $a0, lf
+    li   $v0, 11
     syscall
 
-    jr $ra
+    jr   $ra
 
 .end print_linefeed
 
 .ent swap
-    swap:
-        move $v0, $a1
-        move $v1, $a0
+swap:
+    move $v0, $a1
+    move $v1, $a0
 
-        jr $ra
+    jr   $ra
 .end swap
     
 .ent atoi
-    atoi:
-        move $v0, $zero
+atoi:
+    move $v0, $zero
 
-        # detect sign
-        li $t0, 1
-        lbu $t1, 0($a0)
-        bne $t1, 45, digit
-        li $t0, -1
-        addu $a0, $a0, 1
+    # detect sign
+    li   $t0, 1
+    lbu  $t1, 0($a0)
+    bne  $t1, 45, digit
+    li   $t0, -1
+    addu $a0, $a0, 1
 
-    digit:
-        # read character
-        lbu $t1, 0($a0)
+digit:
+    # read character
+    lbu $t1, 0($a0)
 
-        #finish when non-digit encountered
-        bltu $t1, 48, finish
-        bgtu $t1, 57, finish
+    #finish when non-digit encountered
+    bltu $t1, 48, finish
+    bgtu $t1, 57, finish
 
-        #translate character into digit
-        subu $t1, $t1, 48
+    #translate character into digit
+    subu $t1, $t1, 48
 
-        #multiply the accumulator by ten
-        li $t2, 10
-        mult $v0, $t2
-        mflo $v0
+    #multiply the accumulator by ten
+    li   $t2, 10
+    mult $v0, $t2
+    mflo $v0
 
-        # add digit to the accumulator
-        add $v0, $v0, $t1
+    # add digit to the accumulator
+    add  $v0, $v0, $t1
 
-        # next character
-        addu $a0, $a0, 1
-        b digit
+    # next character
+    addu $a0, $a0, 1
+    b    digit
 
-    finish:
-        mult $v0, $t0
-        mflo $v0
-        jr $ra
+finish:
+    mult $v0, $t0
+    mflo $v0
+    jr   $ra
 .end atoi
 
 
