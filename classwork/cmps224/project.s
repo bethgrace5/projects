@@ -18,16 +18,45 @@
 .ent main
 main:
     
-    li   $s2, 6                 # default values if no args supplied
-    li   $s3, 4
-    
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
 
-    li   $t0, 3
-    beq  $a0, $t0, parse_args   # check for two cmd line args
-                                # parse and save in $s2 and $s3
-    
+    li   $t0, 3                 # value to compare  cmd args
+
+    # defaut values supplied if insufficient cmd args supplied
+    blt  $s0, $t0, default
+    b argv_values
+
+default:
+    li   $v0, 6                # default values if no args supplied
+    li   $v1, 4 
+    b print_result
+
+argv_values:
+    lw   $a0, 4($s1)            # set $a0 = argv[1]
+    lw   $a1, 8($s1)            # set $a1 = argv[2]
+
+    jal  atoi                   # parse first arg(n) and save
+    move $s2, $v0
+
+    move $a0, $a1               # move second arg into parameter reg
+    jal  atoi
+    move $s3, $v0
+
+    move $a0, $s2               # prepare to swap
+    move $a1, $s3
+    blt  $s2, $s3, swap         # set $t0 to 1 if n < k
+
+    move $v0, $s2               # retain values if not swapped
+    move $v1, $s3
+
+    b print_result
+
+swap:
+    move $v0, $a1
+    move $v1, $a0
+
+print_result: 
     move $a0, $v0               # display first argument
     li   $v0, 1
     syscall
@@ -40,59 +69,21 @@ main:
     li   $v0, 1
     syscall
 
-    jal print_linefeed
-    
-    li   $v0, 10                # exit program
-    syscall 
-    
-.end main
-
-.ent parse_args
-parse_args:
-    lw   $a0, 4($s1)            # parse first arg(n) and save
-    jal  atoi
-    move $s2, $v0
-
-    lw   $a0, 8($s1)            # parse second arg(k) and save
-    jal  atoi
-    move $s3, $v0
-
-    move $t0, $zero             # zero out $t0
-    slt  $t0, $s2, $s3          # set $t0 to 1 if n < k
-
-    move $a0, $s2               # prepare to swap
-    move $a1, $s3
-
-    move $v0, $s2               # retain values if not swapped
-    move $v1, $s3 
-
-    bnez $t0, swap              # branch if needed
-
-    move $s2, $v0               # values are in order now
-    move $s3, $v1               # if they were swapped or not
-
-    jr   $ra
-.end parse_args
-
-.ent print_linefeed
-
-print_linefeed:
-    lb   $a0, lf
+    lb   $a0, lf                # print linefeed
     li   $v0, 11
     syscall
 
-    jr   $ra
-
-.end print_linefeed
-
-.ent swap
-swap:
-    move $v0, $a1
-    move $v1, $a0
-
-    jr   $ra
-.end swap
     
+    li   $v0, 10                # exit program
+    syscall 
+   
+    jr $ra
+    
+.end main
+
+
+
+# atoi function provided by instructor
 .ent atoi
 atoi:
     move $v0, $zero
