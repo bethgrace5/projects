@@ -1,8 +1,19 @@
 
 # Bethany Armitage
 # 
-# This program displays a portion of pascal's triangle
-# currently at  75%
+# This program will eventually display a portion of pascal's triangle
+#
+#
+#  progress:
+# >>>>>compute n! and k!                                 (80  percent)
+#
+#      compute_nchoosek:(Iterative algorithm)            (85  percent)
+#
+#      display row n of pascal's triangle for k=0 to n:  (90  percent)
+# 
+#      display the entirety of Pascal's triangle         (95  percent)
+#
+#      change compute_nchoosek to Recursive algorithm:   (100 percent)
 #
 # Register Usage:
 #    main:
@@ -12,7 +23,8 @@
 #       $s1 pointer to arg vector
 #       $s2 stores n
 #       $s3 stores k
-#
+#       $s4 stores n!
+#       $s5 stores k!
 
 .text
 .ent main
@@ -50,6 +62,9 @@ argv_values:
     move $v0, $s2               # retain values if not swapped
     move $v1, $s3
 
+    move $t1, $zero             # zero out $t1 to use for printing
+                                # to avoid infinite loop and reuse
+                                # print branch as needed
     b print_result
 
 swap:
@@ -73,13 +88,41 @@ print_result:
     li   $v0, 11
     syscall
 
-    
+    bnez $t1, compute_nchoosek
+
+call_fac: 
+
+    move $a0, $s2               # set parameters for factorial call
+    move $a1, $s3 
+    jal fac                     # call fac function
+    move $s4, $v0               # save result 
+    move $s5, $v1 
+
+    li $t1, 1                   # change $t1 to avoid infinite loop
+    b print_result
+
+compute_nchoosek:
+
     li   $v0, 10                # exit program
     syscall 
    
-    jr $ra
-    
 .end main
+
+.ent fac
+fac:
+#   this c factorial function will be implemented in MIPS for each
+#   commandline agrument.
+#
+#   int fac(n){
+#       int product =1;
+#       for (int i=1, i<=n, i++)
+#           product = product * i
+#       return product;
+#   }
+
+jr  $ra                         # return
+
+.end fac
 
 
 
