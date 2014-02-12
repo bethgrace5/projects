@@ -44,8 +44,14 @@ main:
     beq $s3, $s6, addit           # branch to appropriate operation
     beq $s3, $s7, subtractit
 
-    # if the operand is not '+', '-', or '*' exit
-    # TODO: print error or usage message upon incorrect operand
+    # if the operand is not '+', '-', or '*' exit, and issue usage msg
+    la $a0, use
+    li $v0, 4
+    syscall
+    
+    la $a0, ok_args
+    li $v0, 4
+    syscall
     
     li $a0, 10          # 10=ascii linefeed
     li $v0, 11          # print character linefeed
@@ -123,5 +129,6 @@ finish:
 .end atoi
 
 .data
-
     newline: .asciiz "\n"
+    use: .asciiz "Error:\nUsage: spim -f calc.s <int> <operand> <int> \n"
+    ok_args: .asciiz "<operand> may be + - or * note '*' may have to be escaped as '\*'\n"
