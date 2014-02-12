@@ -1,69 +1,85 @@
 # filename: calc.s
 
 # description: cs 224 lab 06 
-
-# prompt the user to enter two integers, sum integers and display the result
+# sime calculator to accept two operands. 
+# usage:  addition:         spim -f calc.s 2 + 5
+#         subtraction:      spim -f calc.s 2 - 5
+#         multiplication:   spim -f calc.s 2 \* 5
 
 .text
-.globl read 
 .globl main 
 .ent  main
 
 main:
 
-    la $s0, $a0         # save commandline arg count
-    la $s1, $a1         # save commandline vector
+    move $s0, $a0       # save commandline arg count
+    move $s1, $a1       # save commandline vector
 
-    sw $s2, 4($s1)      # store first commandline arg
-    move $a0, $s2       #convert string to integer
+    lw $s2, 4($s1)      # load first commandline arg
+    move $a0, $s2       # convert string to integer
     jal atoi
     move $s2, $v0
   
-    sw $s3, 8($s1)      # store operand supplied (2nd cmd arg)
+    lw $s3, 8($s1)      # store operand supplied (2nd cmd arg)
+    lb $s3, ($s3)       # save only single char byte, not '\0' 
 
-    sw $s4, 12($s1)     # store third commandline arg
-    move $a0, $s4       #convert string to integer
+#   move $a0, $s3       # print int value of second arg
+#   li $v0, 1           # (error testing purposes)
+#   syscall
+
+    lw $s4, 12($s1)     # load third commandline arg
+    move $a0, $s4       # convert string to integer
     jal atoi
     move $s4, $v0
+
+    move $a0, $s2       # set first cmd arg as parameter one
+    move $a1, $s4       # set second cmd arg as parameter two
 
     # compare operand with ascii equivalent
     li $s5, 42          # 42 = '*'
     li $s6, 43          # 43 = '+'
     li $s7, 45          # 45 = '-'
- 
 
-    move $a0, $s2
-    move $a1, $s4
+    beq $s3, $s5, multiplyit      # test ascii equivalent of operand
+    beq $s3, $s6, addit           # branch to appropriate operation
+    beq $s3, $s7, subtractit
 
-    beq $s3, $s5, mult
-    beq $s3, $s6, add
-    beq $s3, $s7, sub
-
-    la $a0, arg_error
+    # if the operand is not '+', '-', or '*' exit
+    # TODO: print error or usage message upon incorrect operand
     
+    li $a0, 10          # 10=ascii linefeed
+    li $v0, 11          # print character linefeed
 
-mult:
+    li $v0, 10          # system call to exit
+    syscall
+
+multiplyit:
     # multiply the arguments and branch to exit
-
-    
+    # move result to $v0 
+    mul $v0, $a0, $a1
     b exit
-add:
+addit:
     # add the arguments and branch to exit
+    # move result to $v0
+    add $v0, $a0, $a1
     b exit
-sub:
+subtractit:
     # subtract the arguments and branch to exit
+    # move result to $v0
+    sub $v0, $a0, $a1
 
 # print result and exit program 
 exit: 
-    move $a0,$t2        # move the result into register $a0
+    move $a0,$v0        # move the result into first parameter
     li $v0, 1           # setup syscall 1 (print_int)
     syscall             # make the call to display the integer 
      
     li $v0, 4           # print newline
     la $a0, newline  
     syscall          
- 
-    jr $ra
+
+    li $v0, 10          # system call to exit
+    syscall
 
 .ent atoi
 
@@ -108,5 +124,4 @@ finish:
 
 .data
 
-    iprompt: .asciiz "Enter an integer [return]:\n"
     newline: .asciiz "\n"
