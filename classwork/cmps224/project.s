@@ -93,10 +93,12 @@ print_result:
 call_fac: 
 
     move $a0, $s2               # set parameters for factorial call
-    move $a1, $s3 
     jal fac                     # call fac function
     move $s4, $v0               # save result 
-    move $s5, $v1 
+
+    move $a0, $s3 
+    jal fac                     # call fac function
+    move $s5, $v0
 
     li $t1, 1                   # change $t1 to avoid infinite loop
     b print_result
@@ -120,7 +122,22 @@ fac:
 #       return product;
 #   }
 
-jr  $ra                         # return
+# $t0 counter
+# $t1 product
+# $t2 argument/stopping condition
+
+    li      $t0, 1
+    li      $t1, 1
+    move    $t2, $a0
+loop:
+    beqz    $t1, exit_loop
+    mul     $t1, $t1, $t0
+    addi    $t0, $t0, 1
+    b loop
+
+exit_loop:
+    move    $v0, $t1
+    jr      $ra                         # return
 
 .end fac
 
