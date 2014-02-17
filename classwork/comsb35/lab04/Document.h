@@ -1,7 +1,7 @@
 /**
  * Document is a class that holds a list of strings
  *
- * @author 		professor
+ * @author 		Hal Mendoza
  * Course: 		COMS B35
  * Created: 	Feb 15, 2013
  * Source File:	Document.h
@@ -49,7 +49,7 @@ public:
      * @param index the index of the string to return
      * @return string at index
     */
-	std::string getStringAt(int index);
+	std::string getStringAt(int index) const;
 
     /* 
      * Print this Document
@@ -67,7 +67,7 @@ public:
     }
 
 private:
-    // pointer to dynamically-allocated array of pointers to pointers to strings
+    // pointer to dynamically-allocated array of pointers to strings
 	std::string **strings;
 	int numStrings; // number of strings in list of strings
 	int maxStrings; // maximum number of strings that document can hold
