@@ -33,13 +33,17 @@ using namespace std;
         if( numStrings < maxStrings ){
             strings[numStrings] = new string[30];
             *strings[numStrings++] = str;
+            cout << numStrings<<endl;
             return true;
         }
         return false;
     }
+    // this function needs to be const
 	string Document::getStringAt(int index) const {
-        if( index >= numStrings)
+        cout << numStrings << " " << index << endl;
+        if( index > numStrings)
             cerr << "Invalid index!" << endl;
+        cout<< *strings[index] << endl;
         return *strings[index];
     }
 	void Document::printDocument(){
@@ -49,9 +53,13 @@ using namespace std;
         }
     }
 	void Document::copyDoc(const Document& otherDocument){
-        int i=0;
-        while(this->addString(otherDocument.getStringAt(i)))
-            i++;
+        cout << " numStrings" << numStrings << endl;
+        for(int i=0; i < numStrings; i++){
+            //this->addString(otherDocument.getStringAt(i));
+            *strings[i] = otherDocument.getStringAt(i);
+            //cout << i << ":"<< *strings[i] << " " << otherDocument.getStringAt(i);
+        }
+        cout << "return from copy" << endl;
         return;
     }
     /* 
