@@ -49,7 +49,7 @@ public:
      * @param index the index of the string to return
      * @return string at index
     */
-	std::string getStringAt(int index) const;
+	std::string getStringAt(int index) ;
 
     /* 
      * Print this Document
