@@ -9,6 +9,7 @@
 
 #include "Document.h"
 #include <iostream>
+#include <cstdlib>
 #include <string>
 using namespace std;
 
@@ -21,9 +22,7 @@ using namespace std;
         copyDoc(otherDocument);
     }
 	Document::~Document(){
-        for(int i=0; i < numStrings; i++)
-            delete strings[i];
-        delete strings;
+        deleteStrings();
     }
 	const Document& Document::operator=(const Document& otherDocument){
         copyDoc(otherDocument);
@@ -31,35 +30,31 @@ using namespace std;
     }
 	bool Document::addString(string str){
         if( numStrings < maxStrings ){
-            strings[numStrings] = new string[30];
-            *strings[numStrings++] = str;
-            cout << numStrings<<endl;
-            return true;
+                strings [numStrings] = new string[30];
+                *strings [numStrings++] = str;
+                return true;
         }
         return false;
     }
-    // this function needs to be const
-	string Document::getStringAt(int index) const {
-        cout << numStrings << " " << index << endl;
-        if( index > numStrings)
+	string Document::getStringAt(int index)  {
+        if( index >= numStrings){
             cerr << "Invalid index!" << endl;
-        cout<< *strings[index] << endl;
+            exit(1);
+        }
         return *strings[index];
     }
 	void Document::printDocument(){
         cout << strings << endl;
         for (int i=0; i < numStrings; i++){
-            cout << *strings[i] << " (" << strings[i] << "(" << endl;
+            cout << *strings[i] << " (" << strings[i] << ")" << endl;
         }
     }
 	void Document::copyDoc(const Document& otherDocument){
-        cout << " numStrings" << numStrings << endl;
+        numStrings = otherDocument.numStrings;
+        maxStrings = otherDocument.maxStrings;
         for(int i=0; i < numStrings; i++){
-            //this->addString(otherDocument.getStringAt(i));
-            *strings[i] = otherDocument.getStringAt(i);
-            //cout << i << ":"<< *strings[i] << " " << otherDocument.getStringAt(i);
+            strings[i] = otherDocument.strings[i];
         }
-        cout << "return from copy" << endl;
         return;
     }
     /* 
@@ -67,6 +62,10 @@ using namespace std;
      * and then deletes the
      * array of pointers. Should set strings to NULL when done.
     */
-	void deleteStrings(){
+	void Document::deleteStrings(){
+//TODO: fix delete to resolve memory leak
+        //for(int i=0; i < numStrings; i++);
+            //delete strings[i];
+            //delete strings;
         return;
     }
