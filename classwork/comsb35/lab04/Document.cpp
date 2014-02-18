@@ -1,10 +1,10 @@
 /**
- *  implements functionality of Document
+ *  implements functionality of Document.h
  *
  * @author 		Bethany Armitage
  * Course: 		COMS B35
  * Created: 	Feb 15, 2014
- * Source File:	Document.h
+ * Source File:	Document.cpp
  */
 
 #include "Document.h"
@@ -13,14 +13,17 @@
 #include <string>
 using namespace std;
 
+    // constructor
 	Document::Document(int initialSize ){
         numStrings = 0;
         maxStrings = initialSize;
         strings = new string* [initialSize];
     }
+    // copy constructor
 	Document::Document(const Document& otherDocument){
         copyDoc(otherDocument);
     }
+    // destructor
 	Document::~Document(){
         deleteStrings();
     }
@@ -29,10 +32,12 @@ using namespace std;
         copyDoc(otherDocument);
         return *this;
     }
+    // adding a string to the Document
 	bool Document::addString(string str){
         if( numStrings < maxStrings ){
             // allocate space for each individual string
             strings [numStrings] = new string[30];
+
             // add new value to array and increment numStrings
             *strings [numStrings++] = str;
             return true;
@@ -51,7 +56,8 @@ using namespace std;
         // print address of strings**
         cout << strings << endl;
         for (int i=0; i < numStrings; i++){
-            // print each string in strings** followed by its address
+
+        // print individual string in strings** followed by its address
             cout << *strings[i] << " (" << strings[i] << ")" << endl;
         }
     }
@@ -65,11 +71,12 @@ using namespace std;
         return;
     }
 	void Document::deleteStrings(){
+        // remove pointer to each individual string
         for(int i=0; i < numStrings; i++){
             delete [] strings[i];
             strings[i] = NULL;
         }
+        // remove pointer to array of strings
         delete [] strings;
-            //delete strings;
         return;
     }
