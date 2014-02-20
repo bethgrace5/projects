@@ -36,7 +36,7 @@ main:
     li   $t0, 3                 # value to compare  cmd args
 
     # defaut values supplied if insufficient cmd args supplied
-    
+
 default:
     beq  $s0, $t0, argv_values
     li   $s2, 6                # default values if no args supplied
@@ -57,7 +57,7 @@ argv_values:
 
     blt  $s2, $s3, swap         # set $t0 to 1 if n < k
 
-    b print_result
+    b    print_result
 
 swap:
     move $t0, $s2
@@ -91,21 +91,22 @@ call_fac:
     move $a0, $v0               # display first argument
     li   $v0, 1
     syscall
-    
-    li   $a0, 32                # print a space (32=ascii space)
+
+    li   $a0, 32                # print a space (32 = ascii space)
     li   $v0, 11
     syscall
-
-    move $a0, $s3 
+    
+    move $a0, $s3
     jal fac                     # call fac function
-    move $s5, $v0
+    move $s5, $v0               # save result 
 
 
-    move $a0, $v0               # display second argument
+
+    move $a0, $v0
     li   $v0, 1
     syscall
 
-    lb   $a0, lf                # print linefeed
+    lb   $a0, lf                # print a space (32 = ascii space)
     li   $v0, 11
     syscall
 
@@ -181,7 +182,6 @@ exit_loop:
     jr      $ra                         # return
 
 .end fac
-
 
 
 # atoi function provided by instructor
