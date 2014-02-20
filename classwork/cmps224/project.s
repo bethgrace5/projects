@@ -110,6 +110,40 @@ call_fac:
     syscall
 
 compute_nchoosek:
+    # iterative version
+    # c(n, k) =   n!/((n-k)!*k!)
+    # $s2 = n
+    # $s3 = k
+    # $s4 = n!
+    # $s5 = k!
+    # $s6 = c(n,k)
+
+# TODO: construct stack frame to save reutrn address and values
+#       send arguments as $a0, $a1 vs. fallthrough
+#       return  in $v0, use $t registers for function,
+
+    sub  $t3, $s2, $s3          # $t3 = n-k
+
+    move $a0, $t3
+    jal  fac
+    move $t3, $v0               # $s6 = (n-k)!
+
+    mul  $s7, $t3, $s5          # (n-k)!*k!
+
+    div  $s4, $s7               # n!/((n-k)! * k!)
+    mfhi $s6                    # $s6 = c(n,k)
+
+    move $v0, $s6
+
+
+    
+
+    
+
+
+    
+
+
 
     li   $v0, 10                # exit program
     syscall 
