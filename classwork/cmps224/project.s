@@ -5,9 +5,9 @@
 #
 #
 #  progress:
-# >>>>>compute n! and k!                                 (80  percent)
+#      compute n! and k!                                 (80  percent)
 #
-#      compute_nchoosek:(Iterative algorithm)            (85  percent)
+# >>>> compute_nchoosek:(Iterative algorithm)            (85  percent)
 #
 #      display row n of pascal's triangle for k=0 to n:  (90  percent)
 # 
@@ -36,43 +36,36 @@ main:
     li   $t0, 3                 # value to compare  cmd args
 
     # defaut values supplied if insufficient cmd args supplied
-    blt  $s0, $t0, default
-    b argv_values
 
 default:
-    li   $v0, 6                # default values if no args supplied
-    li   $v1, 4 
+    beq  $s0, $t0, argv_values
+    li   $s2, 6                # default values if no args supplied
+    li   $s3, 4 
     b print_result
 
 argv_values:
-    lw   $a0, 4($s1)            # set $a0 = argv[1]
-    lw   $a1, 8($s1)            # set $a1 = argv[2]
+    lw   $s2, 4($s1)            # set $a0 = argv[1]
+    lw   $s3, 8($s1)            # set $a1 = argv[2]
 
+    move $a0, $s2
     jal  atoi                   # parse first arg(n) and save
     move $s2, $v0
 
-    move $a0, $a1               # move second arg into parameter reg
+    move $a0, $s3               # move second arg into parameter reg
     jal  atoi
     move $s3, $v0
 
-    move $a0, $s2               # prepare to swap
-    move $a1, $s3
     blt  $s2, $s3, swap         # set $t0 to 1 if n < k
 
-    move $v0, $s2               # retain values if not swapped
-    move $v1, $s3
-
-    move $t1, $zero             # zero out $t1 to use for printing
-                                # to avoid infinite loop and reuse
-                                # print branch as needed
-    b print_result
+    b    print_result
 
 swap:
-    move $v0, $a1
-    move $v1, $a0
+    move $t0, $s2
+    move $s2, $s3
+    move $s3, $t0
 
 print_result: 
-    move $a0, $v0               # display first argument
+    move $a0, $s2               # display first argument
     li   $v0, 1
     syscall
     
@@ -80,7 +73,7 @@ print_result:
     li   $v0, 11
     syscall
 
-    move $a0, $v1               # display second argument
+    move $a0, $s3               # display second argument
     li   $v0, 1
     syscall
 
@@ -88,18 +81,34 @@ print_result:
     li   $v0, 11
     syscall
 
-    bnez $t1, compute_nchoosek
 
 call_fac: 
 
     move $a0, $s2               # set parameters for factorial call
-    move $a1, $s3 
     jal fac                     # call fac function
     move $s4, $v0               # save result 
-    move $s5, $v1 
 
-    li $t1, 1                   # change $t1 to avoid infinite loop
-    b print_result
+    move $a0, $v0               # display first argument
+    li   $v0, 1
+    syscall
+
+    li   $a0, 32                # print a space (32 = ascii space)
+    li   $v0, 11
+    syscall
+    
+    move $a0, $s3
+    jal fac                     # call fac function
+    move $s5, $v0               # save result 
+
+
+
+    move $a0, $v0
+    li   $v0, 1
+    syscall
+
+    lb   $a0, lf                # print a space (32 = ascii space)
+    li   $v0, 11
+    syscall
 
 compute_nchoosek:
 
@@ -120,10 +129,21 @@ fac:
 #       return product;
 #   }
 
-jr  $ra                         # return
+    li   $t0, 1
+    li   $t1, 1
+    move $t2, $a0
+loop:
+    beqz $t2, exit_loop
+    mul  $t0, $t0, $t1
+    addi $t2, $t2, -1
+    addi $t1, $t1, 1
+    b loop
+
+exit_loop:
+    move $v0, $t0
+    jr   $ra                     # return
 
 .end fac
-
 
 
 # atoi function provided by instructor
