@@ -35,98 +35,60 @@ main:
 
     li   $t0, 3                 # value to compare  cmd args
 
-    # defaut values supplied if insufficient cmd args supplied
+# if no command arguments supplied, use default values
 
-default:
     beq  $s0, $t0, argv_values
-    li   $s2, 6                # default values if no args supplied
+    li   $s2, 6               
     li   $s3, 4 
     b print_result
 
-argv_values:
+# else, use commandline agruments given
+                                # note; argv[0] = project.s
     lw   $s2, 4($s1)            # set $a0 = argv[1]
     lw   $s3, 8($s1)            # set $a1 = argv[2]
 
     move $a0, $s2
-    jal  atoi                   # parse first arg(n) and save
+    jal  atoi                   # parse first  argument and save
     move $s2, $v0
 
-    move $a0, $s3               # move second arg into parameter reg
+    move $a0, $s3               # parse second argument and save
     jal  atoi
     move $s3, $v0
 
-    blt  $s2, $s3, swap         # set $t0 to 1 if n < k
 
-    b    print_result
+    blt  $s2, $s3, swap         # swap values if n < k
+    b    continue               # continue if no need to swap
 
 swap:
     move $t0, $s2
     move $s2, $s3
     move $s3, $t0
 
-print_result: 
-    move $a0, $s2               # display first argument
-    li   $v0, 1
-    syscall
-    
-    li   $a0, 32                # print a space (32=ascii space)
-    li   $v0, 11
-    syscall
+continue:
 
-    move $a0, $s3               # display second argument
-    li   $v0, 1
-    syscall
+    move $a0, $s2               # display two numbers
+    move $a1, $s3               # (n and k)
+    li   $a3, 2
+    b print_result
 
-    lb   $a0, lf                # print linefeed
-    li   $v0, 11
-    syscall
-
-
-call_fac: 
-
-    move $a0, $s2               # set parameters for factorial call
-    jal fac                     # call fac function
-    move $s4, $v0               # save result 
-
-    move $a0, $v0               # display first argument
-    li   $v0, 1
-    syscall
-
-    li   $a0, 32                # print a space (32 = ascii space)
-    li   $v0, 11
-    syscall
-    
-    move $a0, $s3
-    jal fac                     # call fac function
-    move $s5, $v0               # save result 
-
-
-
-    move $a0, $v0
-    li   $v0, 1
-    syscall
-
-    lb   $a0, lf                # print a space (32 = ascii space)
-    li   $v0, 11
-    syscall
-
+#TODO load arguments in correct place for nchoose k funciton
     move $a0, $s2               # compute c(n,k) with n and k
     move $a1, $s3
+
+    jal compute_nchoosek
+
+#TODO print fac results in fac function by calling print result
+#TODO print nchoosek result in function by calling print result
+
     jal compute_nchoosek
     move $s6, $v0
-
-    move $a0, $v0               # display result
-    li   $v0, 1
-    syscall
-
-
-
-
 
     li   $v0, 10                # exit program
     syscall 
    
 .end main
+##########################################################################
+#functions put in this section
 
 .ent fac
 fac:
@@ -210,6 +172,38 @@ compute_nchoosek:
 
     
 
+.ent print_result
+print_result: 
+# $a0, first argument to print
+# $a1, second argument to print
+# $a3, number of arguments to print
+# (can be expanded to print more arguments)
+# (currently prints 1 or 2, each followed by a linefeed)
+   
+    move $a0, $s2               # display first argument
+    li $v0, 1
+    syscall
+
+    la   $a0, lf                # display space
+    li   $v0, 4
+    syscall
+    jr $ra
+
+    blt $a2, 2, no_more_to_print
+
+    move $a0, $s3               # display second argument
+    li $v0, 1
+    syscall
+
+    la   $a0, lf                # display space
+    li   $v0, 4
+    syscall
+
+    no_more_to_print:
+
+    jr  $ra                     # return
+    
+.end print_result
 
     
 
@@ -253,6 +247,16 @@ finish:
     mflo $v0
     jr   $ra
 .end atoi
+
+.ent display_number
+display_number:
+
+.end display_number
+
+.ent display_space
+display_space:
+
+.end display_space
 
 
 .data
