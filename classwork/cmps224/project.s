@@ -110,39 +110,16 @@ call_fac:
     li   $v0, 11
     syscall
 
-compute_nchoosek:
-    # iterative version
-    # c(n, k) =   n!/((n-k)!*k!)
-    # $s2 = n
-    # $s3 = k
-    # $s4 = n!
-    # $s5 = k!
-    # $s6 = c(n,k)
+    move $a0, $s2               # compute c(n,k) with n and k
+    move $a1, $s3
+    jal compute_nchoosek
+    move $s6, $v0
 
-# TODO: construct stack frame to save reutrn address and values
-#       send arguments as $a0, $a1 vs. fallthrough
-#       return  in $v0, use $t registers for function,
-
-    sub  $t3, $s2, $s3          # $t3 = n-k
-
-    move $a0, $t3
-    jal  fac
-    move $t3, $v0               # $s6 = (n-k)!
-
-    mul  $s7, $t3, $s5          # (n-k)!*k!
-
-    div  $s4, $s7               # n!/((n-k)! * k!)
-    mfhi $s6                    # $s6 = c(n,k)
-
-    move $v0, $s6
+    move $a0, $v0               # display result
+    li   $v0, 1
+    syscall
 
 
-    
-
-    
-
-
-    
 
 
 
@@ -183,6 +160,58 @@ exit_loop:
 
 .end fac
 
+
+
+.ent compute_nchoosek
+compute_nchoosek:
+    # iterative version
+    # c(n, k) =   n!/((n-k)!*k!)
+    # $a0 = n
+    # $a1 = k
+    #
+    # $t0 = n!
+    # $t1 = k!
+    # $t3 = (n-k)!
+    # $t5 = (n-k)!*k! (denominator) 
+    # $t6 = c(n,k)
+
+# TODO: construct stack frame to save reutrn address and values
+
+    jal  fac                    # compute n!
+    move $t0, $v0
+
+    move $a0, $a1
+    jal  fac                    # compute k!
+    move $t1, $v0
+        
+    sub  $t3, $s2, $s3          # $t3 = n-k
+
+    move $a0, $t3
+    jal  fac
+    move $t3, $v0               # $t3 = (n-k)
+
+    move $a0, $t3
+    jal  fac
+    move $t3, $v0               # $t3 = (n-k)!
+
+
+
+    mult $t5, $t3, $t1          # (n-k)!*k!
+
+    div  $t0, $t5               # n!/((n-k)! * k!)
+    mfhi $t6                    # $s6 = c(n,k)
+
+    move $v0, $t6
+
+    jr  $ra
+
+.end compute_nchoosek
+
+
+    
+
+
+    
 
 # atoi function provided by instructor
 .ent atoi
