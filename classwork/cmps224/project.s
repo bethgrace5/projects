@@ -129,19 +129,23 @@ fac:
 #       return product;
 #   }
 
-    li   $t0, 1
-    li   $t1, 1
-    move $t2, $a0
+# $t0 counter
+# $t1 product
+# $t2 argument/stopping condition
+
+    li      $t0, 1
+    li      $t1, 1
+    move    $t2, $a0
 loop:
-    beqz $t2, exit_loop
-    mul  $t0, $t0, $t1
-    addi $t2, $t2, -1
-    addi $t1, $t1, 1
+    beqz    $t2, exit_loop
+    mul     $t0, $t0, $t1
+    addi    $t2, $t2, -1
+    addi    $t1, $t1, 1
     b loop
 
 exit_loop:
-    move $v0, $t0
-    jr   $ra                     # return
+    move    $v0, $t0
+    jr      $ra                         # return
 
 .end fac
 
