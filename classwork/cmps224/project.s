@@ -30,9 +30,10 @@
 .ent main
 main:
     
+    sw $ra, ($sp)
+
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
-
     li   $t0, 3                 # value to compare  cmd args
 
 # if no command arguments supplied, use default values
@@ -40,10 +41,10 @@ main:
     beq  $s0, $t0, argv_values
     li   $s2, 6               
     li   $s3, 4 
-    b print_result
+    #b print_result
 
 # else, use commandline agruments given
-                                # note; argv[0] = project.s
+    argv_values:                # note; argv[0] = project.s
     lw   $s2, 4($s1)            # set $a0 = argv[1]
     lw   $s3, 8($s1)            # set $a1 = argv[2]
 
@@ -67,21 +68,34 @@ swap:
 continue:
 
     move $a0, $s2               # display two numbers
-    move $a1, $s3               # (n and k)
-    li   $a3, 2
-    b print_result
+    li   $v0, 1
+    syscall
+
+
+    move $a0, $s3               # (n and k)
+    li   $v0, 1
+    syscall
+
+   
 
 #TODO load arguments in correct place for nchoose k funciton
     move $a0, $s2               # compute c(n,k) with n and k
     move $a1, $s3
 
-    jal compute_nchoosek
 
 #TODO print fac results in fac function by calling print result
 #TODO print nchoosek result in function by calling print result
 
     jal compute_nchoosek
     move $s6, $v0
+
+
+    move $a0, $v0
+    li   $v0, 1
+    syscall
+
+    lw $ra, ($sp)
+    jr $ra
 
     li   $v0, 10                # exit program
     syscall 
@@ -106,19 +120,24 @@ fac:
 # $t1 product
 # $t2 argument/stopping condition
 
-    li      $t0, 1
-    li      $t1, 1
-    move    $t2, $a0
+    li    $t0, 1
+    li    $t1, 1
+    move  $t2, $a0
 loop:
-    beqz    $t2, exit_loop
-    mul     $t0, $t0, $t1
-    addi    $t2, $t2, -1
-    addi    $t1, $t1, 1
+    beqz  $t2, exit_loop
+    mul   $t0, $t0, $t1
+    addi  $t2, $t2, -1
+    addi  $t1, $t1, 1
     b loop
 
 exit_loop:
-    move    $v0, $t0
-    jr      $ra                         # return
+
+   move   $a0, $t0
+   li     $v0, 1
+   syscall
+
+    move  $v0, $t0
+    jr    $ra                         # return
 
 .end fac
 
@@ -139,31 +158,45 @@ compute_nchoosek:
 
 # TODO: construct stack frame to save reutrn address and values
 
-    jal  fac                    # compute n!
-    move $t0, $v0
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
 
-    move $a0, $a1
+    sw   $a0, 0($sp)
+    sw   $a1, 4($sp)
+    
+    sub  $a0, $a0, $a1          #  n-k
+    jal  fac                    #  (n-k)!
+    sw   $v0, 8($sp)            # store  (n-k)!
+
+    lw   $a0, 0($sp)
+    jal  fac                    # compute n!
+    sw   $v0, 12($sp)
+
+    lw   $a0, 4($sp)
     jal  fac                    # compute k!
     move $t1, $v0
         
-    sub  $t3, $s2, $s3          # $t3 = n-k
 
-    move $a0, $t3
-    jal  fac
-    move $t3, $v0               # $t3 = (n-k)
+    lw   $t3, 8($sp)            # $t3 = (n-k)
+    mul $t5, $t3, $t1           # (n-k)!*k!
 
-    move $a0, $t3
-    jal  fac
-    move $t3, $v0               # $t3 = (n-k)!
-
-
-
-    mult $t5, $t3, $t1          # (n-k)!*k!
-
+    lw   $t0, 12($sp)
     div  $t0, $t5               # n!/((n-k)! * k!)
     mfhi $t6                    # $s6 = c(n,k)
+    sw   $t6, 0($sp)
 
-    move $v0, $t6
+    move $a0, $t6
+    li   $a3, 1
+    #jal  print_result           # print the single argumen
+
+    lw   $v0, 0($sp)
+
+    lw   $ra, 2($sp)
+    lw   $fp, 16($sp)
+    addi $sp, $sp, 32
+    
 
     jr  $ra
 
@@ -172,38 +205,40 @@ compute_nchoosek:
 
     
 
-.ent print_result
-print_result: 
+#.ent print_result
+#print_result: 
 # $a0, first argument to print
 # $a1, second argument to print
 # $a3, number of arguments to print
 # (can be expanded to print more arguments)
 # (currently prints 1 or 2, each followed by a linefeed)
    
-    move $a0, $s2               # display first argument
-    li $v0, 1
-    syscall
+    #sw $ra, ($sp)
+    #move $a0, $s2               # display first argument
+    #li $v0, 1
+    #syscall
 
-    la   $a0, lf                # display space
-    li   $v0, 4
-    syscall
-    jr $ra
+    #la   $a0, space                # display space
+    #li   $v0, 4
+    #syscall
 
-    blt $a2, 2, no_more_to_print
 
-    move $a0, $s3               # display second argument
-    li $v0, 1
-    syscall
+    #beq $a3, 1, no_more_to_print
+##
+    #move $a0, $s3               # display second argument
+    #li $v0, 1
+    #syscall
 
-    la   $a0, lf                # display space
-    li   $v0, 4
-    syscall
+    #la   $a0, lf                # newline
+    #li   $v0, 4
+    #syscall
 
-    no_more_to_print:
-
-    jr  $ra                     # return
+    #no_more_to_print:
+#
+    #lw $ra, ($sp)
+    #jr  $ra                     # return
     
-.end print_result
+#.end print_result
 
     
 
@@ -248,19 +283,8 @@ finish:
     jr   $ra
 .end atoi
 
-.ent display_number
-display_number:
-
-.end display_number
-
-.ent display_space
-display_space:
-
-.end display_space
-
 
 .data
-    lf:      .byte 10
-    err_msg: .asciiz "Insufficient arguments given..."
-    use_msg: .asciiz "Usage: spim -f project.s <int>n <int>k where n is row and k is column"
+    lf:      .asciiz "\n" 
+    space:   .asciiz " "
 
