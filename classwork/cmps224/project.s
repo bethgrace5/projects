@@ -141,37 +141,28 @@ compute_nchoosek:
     subu $a0, $a0, $a1          # $a0 = n-k
     jal  fac                    # compute (n-k)!
     sw   $v0, 8($sp)
-    
 
-.globl b1
-b1:
     lw   $a0, ($sp)             # compute n!
     jal  fac
     sw   $v0, ($sp)
-.globl b2
-b2:
+
     lw   $a0, 4($sp)             # compute k!
     jal  fac
     sw   $v0, 4($sp)
-.globl b3
-b3:
+
     lw   $t3, 8($sp)              # load (n-k)!
     lw   $t5, 4($sp)              # load k!
-.globl b4
-b4:
+
     mul  $t7, $t3, $t5          # (n-k)!*k!
     lw   $s4, ($sp)             # load n!
     div  $s4, $t7               # n!/((n-k)! * k!)
     mflo $v0                    # $s6 = c(n,k)
-
 
     lw   $ra, 20($sp)
     lw   $fp, 16($sp)
     addi $sp, $sp, 32
 
     jr   $ra
-
-   
 
 .ent fac
 fac:
