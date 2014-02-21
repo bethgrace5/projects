@@ -64,7 +64,7 @@ bool orderedList<T>::find(const T& item) const{
 */
 template <class T> 
 string orderedList<T>::toString() const{
-    int stop = container.end();
+    int stop = container.size();
     string tmp;
     for(int i=0; i< stop; i++){
         //concatenate tmp
