@@ -29,7 +29,10 @@ using namespace std;
     }
     // overloading assignment(=) operator
 	const Document& Document::operator=(const Document& otherDocument){
-        copyDoc(otherDocument);
+        if ( this != &otherDocument){
+            deleteStrings();
+            copyDoc(otherDocument);
+        }
         return *this;
     }
     // adding a string to the Document
@@ -73,6 +76,9 @@ using namespace std;
 	void Document::deleteStrings(){
         // remove pointer to each individual string
         for(int i=0; i < numStrings; i++){
+            // delete strings[i]
+            //}
+            // strings = null
             delete [] strings[i];
             strings[i] = NULL;
         }
