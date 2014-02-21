@@ -1,4 +1,4 @@
-
+#!!!!!!!!!!!! working version
 # Bethany Armitage
 # 
 # This program will eventually display a portion of pascal's triangle
