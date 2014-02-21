@@ -24,6 +24,7 @@ using namespace std;
 template <class T>
 class orderedList {
 public:
+    orderedList();
     void insert(const T& item);
     bool find(const T& item) const;
     string toString() const;
@@ -33,6 +34,9 @@ private:
 };
 
 #endif /* ORDEREDLIST_H */
+
+//TODO: constructor
+//TODO: destructor
 
 /**
 * inserts item in list in order
