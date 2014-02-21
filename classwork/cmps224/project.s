@@ -27,13 +27,12 @@
 #       $s5 stores k!
 
 .text
-.ent main
 main:
     # construct stack frame to save return address
-    addi $sp, $sp, -32
-    sw   $ra, 20($sp)
-    sw   $fp, 16($sp)
-    addi $fp, $sp, 28
+    addi $sp, $sp, -44
+    sw   $ra, 32($sp)
+    sw   $fp, 36($sp)
+    addi $fp, $sp, 40
     
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
@@ -75,7 +74,7 @@ continue:
     move $a0, $s2               # display two numbers
     move $a1, $s3               # (n and k)
     li   $a2, 2
-    b    print_result
+    jal  print_result
 
     move $a0, $s2               # compute c(n,k) with n and k
     move $a1, $s3
@@ -86,15 +85,14 @@ continue:
 #TODO print fac results in fac function by calling print result
 #TODO print nchoosek result in function by calling print result
 
+    lw   $ra, 32($sp)
 
     li   $v0, 10                # exit program
     syscall 
    
-.end main
 ##########################################################################
 #functions put in this section
 
-.ent fac
 fac:
 #   this c factorial function will be implemented in MIPS for each
 #   commandline agrument.
@@ -181,6 +179,7 @@ compute_nchoosek:
     div  $t0, $t5               # n!/((n-k)! * k!)
     mfhi $t6                    # $s6 = c(n,k)
 
+
     move $a0, $t6               # print result with single argument
     li   $a2, 1
     jal print_result
@@ -202,8 +201,9 @@ print_result:
 # $a2, number of arguments to print
 # (can be expanded to print more arguments)
 # (currently prints 1 or 2, each followed by a linefeed)
+    sw   $ra, ($sp)
    
-    li $v0, 1                       # display first argument
+    li   $v0, 1                       # display first argument
     syscall
 
     la   $a0, space                 # display space
@@ -225,6 +225,8 @@ print_result:
     la   $a0, lf                    # print newline
     li   $v0, 4
     syscall
+
+    lw $ra, ($sp)
 
     jr  $ra                     # return
     
