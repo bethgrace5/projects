@@ -102,6 +102,8 @@ print_result:
     li   $v0, 11
     syscall
 
+.globl beforenk
+beforenk:
 
     move $a0, $s2
     move $a1, $s3 
@@ -119,19 +121,14 @@ print_result:
     syscall
 .end main
     
-
+.ent compute_nchoosek
+.globl compute_nchoosek
 compute_nchoosek:
     # iterative version
     # c(n, k) =   n!/((n-k)!*k!)
-    # $s2 = n
-    # $s3 = k
-    # $s4 = n!
-    # $s5 = k!
-    # $s6 = c(n,k)
-
-# TODO: construct stack frame to save reutrn address and values
-#       send arguments as $a0, $a1 vs. fallthrough
-#       return  in $v0, use $t registers for function,
+    # $a0 = n
+    # $a1 = k
+    # $t6 = c(n,k)
 
     addi $sp, $sp, -32
     sw   $ra, 20($sp)
@@ -141,27 +138,32 @@ compute_nchoosek:
     sw   $a0, ($sp)               # save n
     sw   $a1, 4($sp)               # save k
 
-    sub  $a0, $a0, $a1          # $a0 = n-k
+    subu $a0, $a0, $a1          # $a0 = n-k
     jal  fac                    # compute (n-k)!
     sw   $v0, 8($sp)
+    
 
+.globl b1
+b1:
     lw   $a0, ($sp)             # compute n!
     jal  fac
     sw   $v0, ($sp)
-
+.globl b2
+b2:
     lw   $a0, 4($sp)             # compute k!
     jal  fac
     sw   $v0, 4($sp)
-
+.globl b3
+b3:
     lw   $t3, 8($sp)              # load (n-k)!
     lw   $t5, 4($sp)              # load k!
-
+.globl b4
+b4:
     mul  $t7, $t3, $t5          # (n-k)!*k!
     lw   $s4, ($sp)             # load n!
     div  $s4, $t7               # n!/((n-k)! * k!)
-    mfhi $s6                    # $s6 = c(n,k)
+    mflo $v0                    # $s6 = c(n,k)
 
-    move $v0, $s6
 
     lw   $ra, 20($sp)
     lw   $fp, 16($sp)
