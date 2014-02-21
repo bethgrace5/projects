@@ -29,6 +29,11 @@
 .text
 .ent main
 main:
+    # construct stack frame to save return address
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
     
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
@@ -40,12 +45,13 @@ main:
     beq  $s0, $t0, argv_values
     li   $s2, 6               
     li   $s3, 4 
-    b print_result
+    b    continue
 
 # else, use commandline agruments given
-                                # note; argv[0] = project.s
-    lw   $s2, 4($s1)            # set $a0 = argv[1]
-    lw   $s3, 8($s1)            # set $a1 = argv[2]
+argv_values:
+
+    lw   $s2, 4($s1)            # set $s2 = argv[1]
+    lw   $s3, 8($s1)            # set $s3 = argv[2]
 
     move $a0, $s2
     jal  atoi                   # parse first  argument and save
@@ -56,8 +62,8 @@ main:
     move $s3, $v0
 
 
-    blt  $s2, $s3, swap         # swap values if n < k
-    b    continue               # continue if no need to swap
+    blt  $s2, $s3, swap         # if n < k swap values
+    b    continue               # else continue 
 
 swap:
     move $t0, $s2
@@ -68,20 +74,18 @@ continue:
 
     move $a0, $s2               # display two numbers
     move $a1, $s3               # (n and k)
-    li   $a3, 2
-    b print_result
+    li   $a2, 2
+    b    print_result
 
-#TODO load arguments in correct place for nchoose k funciton
     move $a0, $s2               # compute c(n,k) with n and k
     move $a1, $s3
-
     jal compute_nchoosek
+    move $s6, $v0
+
 
 #TODO print fac results in fac function by calling print result
 #TODO print nchoosek result in function by calling print result
 
-    jal compute_nchoosek
-    move $s6, $v0
 
     li   $v0, 10                # exit program
     syscall 
@@ -95,34 +99,41 @@ fac:
 #   this c factorial function will be implemented in MIPS for each
 #   commandline agrument.
 #
-#   int fac(n){
-#       int product =1;
-#       for (int i=1, i<=n, i++)
-#           product = product * i
-#       return product;
-#   }
-
 # $t0 counter
 # $t1 product
 # $t2 argument/stopping condition
 
+    # construct stack frame to save return address
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
+
     li      $t0, 1
     li      $t1, 1
     move    $t2, $a0
-loop:
+
+fac_loop:
     beqz    $t2, exit_loop
     mul     $t0, $t0, $t1
     addi    $t2, $t2, -1
     addi    $t1, $t1, 1
-    b loop
+    b fac_loop
 
 exit_loop:
-    move    $v0, $t0
+    move    $v0, $t0                    # put return value in $v0
+
+    move    $a0, $t0                    # print result (one argument)
+    li      $a2, 1
+    jal     print_result
+
+    lw   $ra, 20($sp)           # restore return adddress
+    lw   $fp, 16($sp)
+    addi $sp, $sp, 28           # pop stack frame
+
     jr      $ra                         # return
 
 .end fac
-
-
 
 .ent compute_nchoosek
 compute_nchoosek:
@@ -139,67 +150,81 @@ compute_nchoosek:
 
 # TODO: construct stack frame to save reutrn address and values
 
+    # construct stack frame to save return address
+    addi $sp, $sp, -44
+    sw   $ra, 44($sp)
+    sw   $fp, 40($sp)
+    addi $fp, $sp, 40
+
+    sub  $t3, $a0, $a1          # $t3 = n-k
+
+    sw   $a0, 0($sp)            # save n
+    sw   $a1, 4($sp)            # save k
+    sw   $t3, 8($sp)            # save n - k
+
+    # n is already in $a0
     jal  fac                    # compute n!
-    move $t0, $v0
+    sw   $v0, 12($sp)           # save n!
 
-    move $a0, $a1
-    jal  fac                    # compute k!
-    move $t1, $v0
+    lw   $a0, 4($sp)            # load k
+    jal  fac                    
+    sw   $v0, 16($sp)           # save k!
         
-    sub  $t3, $s2, $s3          # $t3 = n-k
-
-    move $a0, $t3
+    lw   $a0, 8($sp)            # load n - k
     jal  fac
-    move $t3, $v0               # $t3 = (n-k)
 
-    move $a0, $t3
-    jal  fac
-    move $t3, $v0               # $t3 = (n-k)!
+    move $t3, $v0               # put (n - k)! into $t3 
+    lw   $t1, 16($sp)           # load k! into $t1
+    mul  $t5, $t3, $t1          # compute denominator (n-k)!*k!
 
-
-
-    mult $t5, $t3, $t1          # (n-k)!*k!
-
+    lw   $t0, 12($sp)           # load n!
     div  $t0, $t5               # n!/((n-k)! * k!)
     mfhi $t6                    # $s6 = c(n,k)
 
-    move $v0, $t6
+    move $a0, $t6               # print result with single argument
+    li   $a2, 1
+    jal print_result
+
+
+    lw   $ra, 44($sp)           # restore return adddress
+    lw   $fp, 40($sp)
+    addi $sp, $sp, 44           # pop stack frame
 
     jr  $ra
 
 .end compute_nchoosek
 
 
-    
-
 .ent print_result
 print_result: 
 # $a0, first argument to print
 # $a1, second argument to print
-# $a3, number of arguments to print
+# $a2, number of arguments to print
 # (can be expanded to print more arguments)
 # (currently prints 1 or 2, each followed by a linefeed)
    
-    move $a0, $s2               # display first argument
-    li $v0, 1
+    li $v0, 1                       # display first argument
     syscall
 
-    la   $a0, lf                # display space
+    la   $a0, space                 # display space
     li   $v0, 4
     syscall
-    jr $ra
 
-    blt $a2, 2, no_more_to_print
+    beq  $a2, 1, no_more_to_print
 
-    move $a0, $s3               # display second argument
-    li $v0, 1
+    move $a0, $a1                   # display second argument
+    li   $v0, 1
     syscall
 
-    la   $a0, lf                # display space
+    la   $a0, space                 # display space
     li   $v0, 4
     syscall
 
     no_more_to_print:
+    
+    la   $a0, lf                    # print newline
+    li   $v0, 4
+    syscall
 
     jr  $ra                     # return
     
@@ -248,19 +273,7 @@ finish:
     jr   $ra
 .end atoi
 
-.ent display_number
-display_number:
-
-.end display_number
-
-.ent display_space
-display_space:
-
-.end display_space
-
-
 .data
-    lf:      .byte 10
-    err_msg: .asciiz "Insufficient arguments given..."
-    use_msg: .asciiz "Usage: spim -f project.s <int>n <int>k where n is row and k is column"
+    space:   .asciiz " "
+    lf:      .asciiz "\n"
 
