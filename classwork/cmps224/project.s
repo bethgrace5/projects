@@ -29,19 +29,21 @@
 .text
 .ent main
 main:
-    
-    sw $ra, ($sp)
+
+     addi $sp, $sp, -32
+     sw   $ra, 20($sp)
+     sw   $fp, 16($sp)
+     addi $fp, $sp, 28
 
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
-    li   $t0, 3                 # value to compare  cmd args
+    li   $s3, 3                 # value to compare  cmd args
 
 # if no command arguments supplied, use default values
 
-    beq  $s0, $t0, argv_values
+    beq  $s0, $s3, argv_values
     li   $s2, 6               
     li   $s3, 4 
-    #b print_result
 
 # else, use commandline agruments given
     argv_values:                # note; argv[0] = project.s
@@ -71,6 +73,7 @@ continue:
     li   $v0, 1
     syscall
 
+    
 
     move $a0, $s3               # (n and k)
     li   $v0, 1
@@ -94,8 +97,10 @@ continue:
     li   $v0, 1
     syscall
 
-    lw $ra, ($sp)
-    jr $ra
+     lw   $ra, 20($sp)
+     lw   $fp, 16($sp)
+     addi $sp, $sp, 32
+
 
     li   $v0, 10                # exit program
     syscall 
@@ -141,8 +146,6 @@ exit_loop:
 
 .end fac
 
-
-
 .ent compute_nchoosek
 compute_nchoosek:
     # iterative version
@@ -158,13 +161,13 @@ compute_nchoosek:
 
 # TODO: construct stack frame to save reutrn address and values
 
-    addi $sp, $sp, -32
-    sw   $ra, 20($sp)
-    sw   $fp, 16($sp)
-    addi $fp, $sp, 28
+     addi $sp, $sp, -32
+     sw   $ra, 20($sp)
+     sw   $fp, 16($sp)
+     addi $fp, $sp, 28
 
-    sw   $a0, 0($sp)
-    sw   $a1, 4($sp)
+     sw   $a0, 0($sp)
+     sw   $a1, 4($sp)
     
     sub  $a0, $a0, $a1          #  n-k
     jal  fac                    #  (n-k)!
@@ -178,7 +181,6 @@ compute_nchoosek:
     jal  fac                    # compute k!
     move $t1, $v0
         
-
     lw   $t3, 8($sp)            # $t3 = (n-k)
     mul $t5, $t3, $t1           # (n-k)!*k!
 
@@ -187,60 +189,20 @@ compute_nchoosek:
     mfhi $t6                    # $s6 = c(n,k)
     sw   $t6, 0($sp)
 
+    li $t6, 5
+
     move $a0, $t6
     li   $a3, 1
-    #jal  print_result           # print the single argumen
 
-    lw   $v0, 0($sp)
+     lw   $v0, 0($sp)
 
-    lw   $ra, 2($sp)
-    lw   $fp, 16($sp)
-    addi $sp, $sp, 32
+     lw   $ra, 20($sp)
+     lw   $fp, 16($sp)
+     addi $sp, $sp, 32
     
-
     jr  $ra
 
 .end compute_nchoosek
-
-
-    
-
-#.ent print_result
-#print_result: 
-# $a0, first argument to print
-# $a1, second argument to print
-# $a3, number of arguments to print
-# (can be expanded to print more arguments)
-# (currently prints 1 or 2, each followed by a linefeed)
-   
-    #sw $ra, ($sp)
-    #move $a0, $s2               # display first argument
-    #li $v0, 1
-    #syscall
-
-    #la   $a0, space                # display space
-    #li   $v0, 4
-    #syscall
-
-
-    #beq $a3, 1, no_more_to_print
-##
-    #move $a0, $s3               # display second argument
-    #li $v0, 1
-    #syscall
-
-    #la   $a0, lf                # newline
-    #li   $v0, 4
-    #syscall
-
-    #no_more_to_print:
-#
-    #lw $ra, ($sp)
-    #jr  $ra                     # return
-    
-#.end print_result
-
-    
 
 # atoi function provided by instructor
 .ent atoi
