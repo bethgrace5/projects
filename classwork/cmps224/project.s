@@ -28,6 +28,7 @@
 
 .text
 .ent main
+.globl main
 main:
     
     move $s0, $a0               # save argc
@@ -81,14 +82,9 @@ print_result:
     li   $v0, 11
     syscall
 
-
-call_fac: 
-
-    move $a0, $s2               # set parameters for factorial call
+    move $a0, $s2               
     jal fac                     # call fac function
-    move $s4, $v0               # save result 
-
-    move $a0, $v0               # display first argument
+    move $a0, $v0               # display result
     li   $v0, 1
     syscall
 
@@ -98,17 +94,31 @@ call_fac:
     
     move $a0, $s3
     jal fac                     # call fac function
-    move $s5, $v0               # save result 
-
-
-
-    move $a0, $v0
+    move $a0, $v0               # print result
     li   $v0, 1
     syscall
 
-    lb   $a0, lf                # print a space (32 = ascii space)
+    lb   $a0, lf                # print a newline
     li   $v0, 11
     syscall
+
+
+    move $a0, $s2
+    move $a1, $s3 
+    jal compute_nchoosek
+
+    move $a0, $v0               # print result
+    li $v0, 1
+    syscall
+
+    lb   $a0, lf                # print a newline
+    li   $v0, 11
+    syscall
+
+    li $v0, 10                  # exit program
+    syscall
+.end main
+    
 
 compute_nchoosek:
     # iterative version
@@ -123,33 +133,43 @@ compute_nchoosek:
 #       send arguments as $a0, $a1 vs. fallthrough
 #       return  in $v0, use $t registers for function,
 
-    sub  $t3, $s2, $s3          # $t3 = n-k
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
 
-    move $a0, $t3
+    sw   $a0, ($sp)               # save n
+    sw   $a1, 4($sp)               # save k
+
+    sub  $a0, $a0, $a1          # $a0 = n-k
+    jal  fac                    # compute (n-k)!
+    sw   $v0, 8($sp)
+
+    lw   $a0, ($sp)             # compute n!
     jal  fac
-    move $t3, $v0               # $s6 = (n-k)!
+    sw   $v0, ($sp)
 
-    mul  $s7, $t3, $s5          # (n-k)!*k!
+    lw   $a0, 4($sp)             # compute k!
+    jal  fac
+    sw   $v0, 4($sp)
 
-    div  $s4, $s7               # n!/((n-k)! * k!)
+    lw   $t3, 8($sp)              # load (n-k)!
+    lw   $t5, 4($sp)              # load k!
+
+    mul  $t7, $t3, $t5          # (n-k)!*k!
+    lw   $s4, ($sp)             # load n!
+    div  $s4, $t7               # n!/((n-k)! * k!)
     mfhi $s6                    # $s6 = c(n,k)
 
     move $v0, $s6
 
+    lw   $ra, 20($sp)
+    lw   $fp, 16($sp)
+    addi $sp, $sp, 32
 
-    
+    jr   $ra
 
-    
-
-
-    
-
-
-
-    li   $v0, 10                # exit program
-    syscall 
    
-.end main
 
 .ent fac
 fac:
