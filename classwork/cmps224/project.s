@@ -7,13 +7,13 @@
 #  progress:
 #      compute n! and k!                                 (80  percent)
 #
-# >>>> compute_nchoosek:(Iterative algorithm)            (85  percent)
+#      compute_nchoosek:(Iterative algorithm)            (85  percent)
 #
 #      display row n of pascal's triangle for k=0 to n:  (90  percent)
 # 
 #      display the entirety of Pascal's triangle         (95  percent)
 #
-#      change compute_nchoosek to Recursive algorithm:   (100 percent)
+# >>>> change compute_nchoosek to Recursive algorithm:   (100 percent)
 #
 # Register Usage:
 #    main:
