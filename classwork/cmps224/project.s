@@ -8,13 +8,13 @@
 #  progress:
 #      compute n! and k!                                 (80  percent)
 #
-# >>>> compute_nchoosek:(Iterative algorithm)            (85  percent)
+#      compute_nchoosek:(Iterative algorithm)            (85  percent)
 #
 #      display row n of pascal's triangle for k=0 to n:  (90  percent)
 # 
 #      display the entirety of Pascal's triangle         (95  percent)
 #
-#      change compute_nchoosek to Recursive algorithm:   (100 percent)
+# >>>> change compute_nchoosek to Recursive algorithm:   (100 percent)
 #
 # Register Usage:
 #    main:
@@ -24,8 +24,6 @@
 #       $s1 pointer to arg vector
 #       $s2 stores n
 #       $s3 stores k
-#       $s4 stores n!
-#       $s5 stores k!
 
 .text
 .ent main
@@ -35,7 +33,7 @@ main:
     move $s0, $a0               # save argc
     move $s1, $a1               # save argv
 
-    li   $t0, 3                 # value to compare  cmd args
+    li   $t0, 3                 # value to compare number of cmd args
 
     # defaut values supplied if insufficient cmd args supplied
 
@@ -70,7 +68,7 @@ print_result:
 
     sw   $s2, ($sp)             # store n for safe keeping
 
-    move $a0, $s2               # display first argument
+    move $a0, $s2               # print first argument
     li   $v0, 1
     syscall
     
@@ -78,17 +76,17 @@ print_result:
     li   $v0, 11
     syscall
 
-    move $a0, $s3               # display second argument
+    move $a0, $s3               # print second argument
     li   $v0, 1
     syscall
 
-    lb   $a0, lf                # print linefeed
+    lb   $a0, lf                # print newline
     li   $v0, 11
     syscall
 
     move $a0, $s2               
-    jal fac                     # call fac function
-    move $a0, $v0               # display result
+    jal fac                     # call fac function for n
+    move $a0, $v0               # print result fac(n)
     li   $v0, 1
     syscall
 
@@ -97,8 +95,8 @@ print_result:
     syscall
     
     move $a0, $s3
-    jal fac                     # call fac function
-    move $a0, $v0               # print result
+    jal fac                     # call fac function for k
+    move $a0, $v0               # print result fac(k)
     li   $v0, 1
     syscall
 
@@ -106,11 +104,11 @@ print_result:
     li   $v0, 11
     syscall
 
-    move $a0, $s2
-    move $a1, $s3 
+    move $a0, $s2               # send n to function
+    move $a1, $s3               # send k to function
     jal compute_nchoosek
 
-    move $a0, $v0               # print result
+    move $a0, $v0               # print result nchoosek
     li $v0, 1
     syscall
 
@@ -118,11 +116,11 @@ print_result:
     li   $v0, 11
     syscall
 
-    move $a0, $s2
+    move $a0, $s2               # print row n of pascal's triangle
     jal print_row
 
     lw $a0 ($sp)                # pull n from stack
-    jal display_triangle
+    jal display_triangle        # print entire triangle up to rown n
 
     li $v0, 10                  # exit program
     syscall
@@ -135,14 +133,14 @@ display_triangle:
     sw   $fp, 16($sp)
     addi $fp, $sp, 28
 
-    sw   $a0, ($sp)                 # save n
+    sw   $a0, ($sp)             # save n
     li   $t1, 0
-    sw   $t1, 4($sp)                # save counter
+    sw   $t1, 4($sp)            # save counter
 
 loop_display_triangle:
 
-    lw   $t0, ($sp)                 # $t0 n
-    lw   $t1, 4($sp)                # $t1 counter
+    lw   $t0, ($sp)             # $t0 n
+    lw   $t1, 4($sp)            # $t1 counter
     
     blt $t0, $t1,  exit_display_triangle
 
@@ -222,19 +220,24 @@ exit_print_row:
 .ent compute_nchoosek
 .globl compute_nchoosek
 compute_nchoosek:
-    # iterative version
-    # c(n, k) =   n!/((n-k)!*k!)
-    # $a0 = n
-    # $a1 = k
-    # $t6 = c(n,k)
+# TODO: implement recursive version (note, will not need to call fac)
+# int C(n, k){
+#    if (k==0) return 1;
+#    if (k==1) return n;
+#    if (k==n) return 1;
+#    return C(n-1, k) + C(n-1, k-1);
+#}
+# $a0 = n
+# $a1 = k
+# $v0 = c(n,k)
 
-    addi $sp, $sp, -32
+    addi $sp, $sp, -32          # set up stack frame
     sw   $ra, 20($sp)
-    sw   $fp, 16($sp)
+    sw   $fp, 16($sp)           # set up frame pointer
     addi $fp, $sp, 28
 
-    sw   $a0, ($sp)               # save n
-    sw   $a1, 4($sp)               # save k
+    sw   $a0, ($sp)             # save n
+    sw   $a1, 4($sp)            # save k
 
     subu $a0, $a0, $a1          # $a0 = n-k
     jal  fac                    # compute (n-k)!
@@ -244,12 +247,12 @@ compute_nchoosek:
     jal  fac
     sw   $v0, ($sp)
 
-    lw   $a0, 4($sp)             # compute k!
+    lw   $a0, 4($sp)            # compute k!
     jal  fac
     sw   $v0, 4($sp)
 
-    lw   $t3, 8($sp)              # load (n-k)!
-    lw   $t5, 4($sp)              # load k!
+    lw   $t3, 8($sp)            # load (n-k)!
+    lw   $t5, 4($sp)            # load k!
 
     mul  $t7, $t3, $t5          # (n-k)!*k!
     lw   $s4, ($sp)             # load n!
@@ -264,18 +267,9 @@ compute_nchoosek:
 
 .ent fac
 fac:
-#   this c factorial function will be implemented in MIPS for each
-#   commandline agrument.
-#
-#   int fac(n){
-#       int product =1;
-#       for (int i=1, i<=n, i++)
-#           product = product * i
-#       return product;
-#   }
-
+# computes factorial of argument sent
 # $t0 counter
-# $t1 product
+# $t1 accumulated product
 # $t2 argument/stopping condition
 
     li      $t0, 1
@@ -339,6 +333,4 @@ finish:
 
 .data
     lf:      .asciiz "\n" 
-    err_msg: .asciiz "Insufficient arguments given..."
-    use_msg: .asciiz "Usage: spim -f project.s <int>n <int>k where n is row and k is column"
 
