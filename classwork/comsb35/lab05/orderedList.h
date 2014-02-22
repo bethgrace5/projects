@@ -27,7 +27,7 @@ public:
     void insert(const T& item);
     bool find(const T& item) const;
     string toString() const;
-    void putInOrder();
+    //void putInOrder();
 private:
     std::vector<T> container;
 };
@@ -41,7 +41,14 @@ private:
 */
 template <class T>
 void orderedList<T>::insert(const T& item){
-    container.push_back(item);
+    int stop = container.size();
+    for(int i=0; i< stop; i++){
+
+        if (container[i] > item){
+                
+            container.insert(i, item);
+        }
+    }
     return;
 }
 
@@ -67,7 +74,7 @@ bool orderedList<T>::find(const T& item) const{
 template <class T> 
 string orderedList<T>::toString() const{
 
-    //putInOrder();
+  //putInOrder(this);
 
     ostringstream os;
     int stop = container.size();
@@ -85,11 +92,20 @@ string orderedList<T>::toString() const{
     return tmp;
 
 }
-void putInOrder(){
+/*template <class T>
+void orderedList<T>::putInOrder(T& item){
+    int stop = container.size();
+    T tmp ="";
+    for(int i=0; i< stop-1; i++){
 
-// put vector in numerical or alphabetical order
+        if (container[i+1] < container[i]){
+            tmp = container[i+1];
+            container[i] = container[i+1];
+            container[i+1] = tmp;
+        }
+    }
 
-}
+}*/
 
 
 
