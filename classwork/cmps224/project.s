@@ -66,6 +66,9 @@ swap:
     move $s3, $t0
 
 print_result: 
+
+    sw   $s2, ($sp)             # store n for safe keeping
+
     move $a0, $s2               # display first argument
     li   $v0, 1
     syscall
@@ -102,9 +105,6 @@ print_result:
     li   $v0, 11
     syscall
 
-.globl beforenk
-beforenk:
-
     move $a0, $s2
     move $a1, $s3 
     jal compute_nchoosek
@@ -117,9 +117,106 @@ beforenk:
     li   $v0, 11
     syscall
 
+    move $a0, $s2
+    jal print_row
+
+    lw $a0 ($sp)                # pull n from stack
+    jal display_triangle
+
     li $v0, 10                  # exit program
     syscall
 .end main
+
+.ent display_triangle
+display_triangle:
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
+
+    sw   $a0, ($sp)                 # save n
+    li   $t1, 0
+    sw   $t1, 4($sp)                # save counter
+
+loop_display_triangle:
+
+    lw   $t0, ($sp)                 # $t0 n
+    lw   $t1, 4($sp)                # $t1 counter
+    
+    blt $t0, $t1,  exit_display_triangle
+
+    move $a0, $t1
+    jal print_row
+
+
+    lw   $t1, 4($sp)
+    addi $t1, $t1, 1
+    sw   $t1, 4($sp)
+
+
+    b loop_display_triangle
+
+exit_display_triangle:
+
+
+    lw   $ra, 20($sp)
+    lw   $fp, 16($sp)
+    addi $sp, $sp, 32
+
+    jr   $ra
+
+.end display_triangle
+.ent print_row
+
+print_row:
+
+    addi $sp, $sp, -32
+    sw   $ra, 20($sp)
+    sw   $fp, 16($sp)
+    addi $fp, $sp, 28
+
+    move $t0, $a0               # $t0 = n
+    move $t1, $zero             # $t1 = k
+
+    sw   $t0, ($sp)
+    sw   $t1, 4($sp)
+count:
+
+    lw   $t0, ($sp)
+    lw   $t1, 4($sp)
+
+    bgt  $t1, $t0, exit_print_row
+
+    move $a0, $t0 
+    move $a1, $t1
+    jal compute_nchoosek
+
+    move $a0, $v0               # print number
+    li   $v0, 1
+    syscall
+
+    li   $a0, 32                # print a space
+    li   $v0, 11
+    syscall
+
+    lw   $t1, 4($sp)
+    addi $t1, $t1, 1
+    sw   $t1, 4($sp)
+    b count
+
+exit_print_row:
+
+    la   $a0, lf                # print line feed
+    li   $v0, 4
+    syscall
+
+    lw   $ra, 20($sp)
+    lw   $fp, 16($sp)
+    addi $sp, $sp, 32
+
+    jr   $ra
+
+.end print_row
     
 .ent compute_nchoosek
 .globl compute_nchoosek
@@ -240,7 +337,7 @@ finish:
 
 
 .data
-    lf:      .byte 10
+    lf:      .asciiz "\n" 
     err_msg: .asciiz "Insufficient arguments given..."
     use_msg: .asciiz "Usage: spim -f project.s <int>n <int>k where n is row and k is column"
 
