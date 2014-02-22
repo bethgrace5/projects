@@ -36,6 +36,11 @@ private:
 #endif /* ORDEREDLIST_H */
 
 //TODO: constructor
+template <class T>
+orderedList<T>::orderedList(){
+
+
+}
 //TODO: destructor
 
 /**
@@ -45,14 +50,18 @@ private:
 */
 template <class T>
 void orderedList<T>::insert(const T& item){
-    int stop = container.size();
-    for(int i=0; i< stop; i++){
+    ostringstream os;
+    os << item;
+    cout << "added" << os.str()<< endl;
+    //int stop = container.size();
+    //for(int i=0; i< stop; i++){
 
-        if (container[i] > item){
+        //if (container[i] > os.str()){
                 
-            container.insert(i, item);
-        }
-    }
+            //container.insert(i, item);
+        //}
+    //}
+    os.str("");
     return;
 }
 
