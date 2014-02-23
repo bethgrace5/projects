@@ -21,7 +21,7 @@ int main() {
     cout << intList.toString() << endl;
 
     stringList.insert("great");
-    stringList.insert("Penguin");
+    stringList.insert("penguin");
     stringList.insert("banana");
     stringList.insert("jungle");
     cout << stringList.find("apple") << endl;

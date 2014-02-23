@@ -20,7 +20,6 @@
 
 using namespace std;
 
-
 template <class T>
 class orderedList {
 public:
@@ -28,40 +27,43 @@ public:
     void insert(const T& item);
     bool find(const T& item) const;
     string toString() const;
-    //void putInOrder();
 private:
     std::vector<T> container;
+    typename std::vector<T>::iterator it;
 };
-
 #endif /* ORDEREDLIST_H */
 
-//TODO: constructor
+// constructor
 template <class T>
 orderedList<T>::orderedList(){
-
-
 }
-//TODO: destructor
 
 /**
-* inserts item in list in order
+* inserts item in list in order without using vector::sort()
 * (alphabetical or numerical depending on type)
 * @param T& item the item to insert
 */
 template <class T>
 void orderedList<T>::insert(const T& item){
-    ostringstream os;
-    os << item;
-    cout << "added" << os.str()<< endl;
-    //int stop = container.size();
-    //for(int i=0; i< stop; i++){
+    bool inserted = false;
 
-        //if (container[i] > os.str()){
-                
-            //container.insert(i, item);
-        //}
-    //}
-    os.str("");
+    //if container is empty, add item automatically
+    if(container.size() == 0){
+        container.push_back(item);
+        return;
+    }
+    // insert item after largest value is found (using iterator)
+    for(it=container.begin(); it < container.end() && !inserted; it++){
+        if (*it > item){
+            inserted = true;
+            container.insert(it, item);
+        }
+    }
+    // if the item being inserted is larger than the largest element
+    // add item to the end of the container
+    if( !inserted ){
+        container.push_back(item);
+    }
     return;
 }
 
@@ -72,11 +74,11 @@ void orderedList<T>::insert(const T& item){
 */
 template <class T> 
 bool orderedList<T>::find(const T& item) const{
-    int stop = container.size();
-    for(int i=0; i<stop; i++){
-        if( ((T) container.at(i)) == item)
+    for(unsigned int i=0; i<container.size(); i++){
+        if( container[i] == item){
             return true;
         }
+    }
     return false;
 }
 
@@ -86,39 +88,20 @@ bool orderedList<T>::find(const T& item) const{
 */
 template <class T> 
 string orderedList<T>::toString() const{
-
-  //putInOrder(this);
-
     ostringstream os;
-    int stop = container.size();
-    string tmp= "";
-    for(int i=0; i< stop; i++){
+    int size = container.size();
+    string str= "";
+
+    for(int i=0; i< size; i++){
         // change any type read to string
         os << container[i];
 
         //add string to accumulation
-        tmp = tmp + os.str() + "\n";
+        str = str + os.str() + "\n";
 
         // reset string buffer
         os.str("");
     }
-    return tmp;
+    return str;
 
 }
-/*template <class T>
-void orderedList<T>::putInOrder(T& item){
-    int stop = container.size();
-    T tmp ="";
-    for(int i=0; i< stop-1; i++){
-
-        if (container[i+1] < container[i]){
-            tmp = container[i+1];
-            container[i] = container[i+1];
-            container[i+1] = tmp;
-        }
-    }
-
-}*/
-
-
-
