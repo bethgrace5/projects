@@ -231,6 +231,7 @@ compute_nchoosek:
 # $a1 = k
 # $v0 = c(n,k)
 
+
     addi $sp, $sp, -32          # set up stack frame
     sw   $ra, 20($sp)
     sw   $fp, 16($sp)           # set up frame pointer
@@ -238,31 +239,42 @@ compute_nchoosek:
 
     sw   $a0, ($sp)             # save n
     sw   $a1, 4($sp)            # save k
+    li   $t0, 1
 
-    subu $a0, $a0, $a1          # $a0 = n-k
-    jal  fac                    # compute (n-k)!
-    sw   $v0, 8($sp)
 
-    lw   $a0, ($sp)             # compute n!
-    jal  fac
-    sw   $v0, ($sp)
+    li   $v0, 1
+    beq  $a1, $zero, exit_nchoosek  # if k==0, return 1
+    beq  $a1, $a0,   exit_nchoosek  # if k==n, return 1
+    move $v1, $a0
+    beq  $a1, $t0,   exit_nchoosek    # if k==1, return n
 
-    lw   $a0, 4($sp)            # compute k!
-    jal  fac
-    sw   $v0, 4($sp)
 
-    lw   $t3, 8($sp)            # load (n-k)!
-    lw   $t5, 4($sp)            # load k!
+    sub  $a0, $a0, 1
 
-    mul  $t7, $t3, $t5          # (n-k)!*k!
-    lw   $s4, ($sp)             # load n!
-    div  $s4, $t7               # n!/((n-k)! * k!)
-    mflo $v0                    # $s6 = c(n,k)
+    sw   $a0, ($sp)             # save (n-1)
+    sw   $a1, 4($sp)            # save k
+    jal compute_nchoosek        # compute C(n-1, k)
 
+    sw   $v0,  8($sp) 
+
+    lw   $a0, ($sp)
+    lw   $a1, 4($sp)
+
+    sub  $a0, $a0, 1
+    sub  $a1, $a1, 1
+
+    sw   $a0, ($sp)             # save (n-1)
+    sw   $a1, 4($sp)            # save (k-1)
+    jal compute_nchoosek        # compute C(n-1, k-1)
+
+    # return c(n-1, k) + c(n-1, k-1);
+    lw   $t0,  8($sp) 
+    add  $v0, $v0, $t0
+
+
+    exit_nchoosek:
     lw   $ra, 20($sp)
-    lw   $fp, 16($sp)
     addi $sp, $sp, 32
-
     jr   $ra
 
 .ent fac
