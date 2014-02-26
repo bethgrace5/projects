@@ -14,8 +14,8 @@
 # 
 #      display the entirety of Pascal's triangle         (95  percent)
 #
-# >>>> change compute_nchoosek to Recursive algorithm:   (100 percent)
-#
+#      change compute_nchoosek to Recursive algorithm:   (100 percent)
+#  >>> complete!
 # Register Usage:
 #    main:
 #       $a registers used for arguments
@@ -36,7 +36,6 @@ main:
     li   $t0, 3                 # value to compare number of cmd args
 
     # defaut values supplied if insufficient cmd args supplied
-
 default:
     beq  $s0, $t0, argv_values
     li   $s2, 6                # default values if no args supplied
@@ -220,7 +219,6 @@ exit_print_row:
 .ent compute_nchoosek
 .globl compute_nchoosek
 compute_nchoosek:
-# TODO: implement recursive version (note, will not need to call fac)
 # int C(n, k){
 #    if (k==0) return 1;
 #    if (k==1) return n;
@@ -239,27 +237,28 @@ compute_nchoosek:
 
     sw   $a0, ($sp)             # save n
     sw   $a1, 4($sp)            # save k
+
     li   $t0, 1
-
-
     li   $v0, 1
     beq  $a1, $zero, exit_nchoosek  # if k==0, return 1
     beq  $a1, $a0,   exit_nchoosek  # if k==n, return 1
-    move $v1, $a0
+    move $v0, $a0
     beq  $a1, $t0,   exit_nchoosek    # if k==1, return n
 
-
-    sub  $a0, $a0, 1
+    lw   $a0, ($sp)             # save (n-1)
+    lw   $a1, 4($sp)            # save k
 
     sw   $a0, ($sp)             # save (n-1)
     sw   $a1, 4($sp)            # save k
+    addi $a0, $a0, -1
+
+
     jal compute_nchoosek        # compute C(n-1, k)
 
     sw   $v0,  8($sp) 
 
     lw   $a0, ($sp)
     lw   $a1, 4($sp)
-
     sub  $a0, $a0, 1
     sub  $a1, $a1, 1
 
