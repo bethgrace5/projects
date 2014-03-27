@@ -1,110 +1,91 @@
+/**
+ *  Simulates a stack using linked lists
+ *  @author         Bethany Armitage
+ *  course:         COMS B35
+ *  created:        Thu 03/20/2014 
+ *  source file:    Stack.h 
+ */
 
 #ifndef H_Stack
 #define H_Stack 
-
-//#include "linkedList.h"
 #include "stackADT.h"
-#include <iostream>
-#include <string>
-
-template <class Type>
-struct Node{
-    Type info;
-    Node<Type> *link;
-};
+#include "unorderedLinkedList.h"
 
 template <class Type>
 class Stack: public stackADT<Type>{
-
-    Node<Type> *stackTop;
-
-
+    
 public:
-/*
-* Constructor
-*/
-    template <Type>
-    Stack(){
-        stackTop = NULL;
+    //constructor
+    Stack();
+    //destructor
+    ~Stack();
+    /*Method to initialize the stack to an empty state.
+    */
+    void initializeStack();
+
+    /*Function to determine whether the stack is empty.
+    * @return true if stack is empty, false if stack is not empty.
+    */
+    bool isEmptyStack() const;
+
+    /*Function to determine whether the stack is full.
+    * @return false stack is never full.
+    */
+    bool isFullStack() const;
+
+    /*Function to add newItem to the stack.
+    * @param Type& newItem the item to be added.
+    */
+    void push(const Type& newItem);
+
+    /*Function to return the top element of the stack.
+    * @return the top element of Type in list
+    */
+    Type top() const;
+
+    /*Function to return the top element of the stack.
+    */
+    void pop();
+
+private:
+    unorderedLinkedList<Type> list;
+};
+#endif
+    //constructor
+    template <class Type> Stack<Type>::Stack(){
+
+    }
+    //destructor
+    template <class Type> Stack<Type>::~Stack(){
+        list.destroyList();
     }
 
-       //Method to initialize the stack to an empty state.
-       //Postcondition: Stack is empty
-    template <Type>
-    void initializeStack(){
-       Node<Type> *temp;
-
-       while( stackTop != NULL ){
-           temp = stackTop;
-           stackTop = stackTop->link;
-           delete temp;
-       }
+    template <class Type> void Stack<Type>::initializeStack(){
+       list.initializeList();
+       return;
     }
 
-      //Function to determine whether the stack is empty.
-      //Postcondition: Returns true if the stack is empty,
-      //               otherwise returns false.
-    template <Type>
-    bool isEmptyStack() const{
-        return (stackTop == NULL);
+    template <class Type> bool Stack<Type>::isEmptyStack() const{
+       return list.isEmptyList();
     }
 
-      //Function to determine whether the stack is full.
-      //Postcondition: Returns true if the stack is full,
-      //               otherwise returns false.
-    template <Type>
-    bool isFullStack() const{
+    template <class Type> bool Stack<Type>::isFullStack() const{
         return false;
     }
 
-      //Function to add newItem to the stack.
-      //Precondition: The stack exists and is not full.
-      //Postcondition: The stack is changed and newItem
-      //               is added to the top of the stack.
-    template <Type>
-    void push(const Type& newItem){
-        Node<Type> *newNode = new Node<Type>;
-
-        newNode->info = newItem;
-        newNode->link = stackTop;
-
-        stackTop = newNode;
+    template <class Type> void Stack<Type>::push(const Type& newItem){
+        list.insertFirst(newItem);
     }
 
-      //Function to return the top element of the stack.
-      //Precondition: The stack exists and is not empty.
-      //Postcondition: If the stack is empty, the program
-      //               terminates; otherwise, the top element
-      //               of the stack is returned.
-    template <Type>
-    Type top() const{
-        return stackTop->info;
+    template <class Type> Type Stack<Type>::top() const{
+        return list.front();
     }
 
-      //Function to remove the top element of the stack.
-      //Precondition: The stack exists and is not empty.
-      //Postcondition: The stack is changed and the top
-      //               element is removed from the stack.
-    template <Type>
-    void pop(){
-        if( stackTop != NULL ){
-            stackTop=stackTop->link;
+    template <class Type> void Stack<Type>::pop(){
+        if( !list.isEmptyList() ){
+           list.deleteNode(list.front()); 
         }
         else 
             std::cout << "cannot remove from empty stack" << std::endl;
+        return;
     }
-
-    /**
-    * Analyzes input string for grouping-symbol (parenthesis, square
-    * brackets, and curly braces) mismatches and returns the index of
-    * the first mismatch, or -1 if no mismatch is found. If not all 
-    * open symbols have matches, reutrn length of input string.
-    *
-    * @param str string to analyze
-    * @return either index of first mismatch, length of string if
-    * closing grouping symbol is missing, or -1 if mo mismatch found. 
-    */
-
-};
-
-#endif
