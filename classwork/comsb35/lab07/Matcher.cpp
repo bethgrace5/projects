@@ -1,9 +1,15 @@
-
+/**
+ *  parses a string for matching grouping symbols. Notifies user if 
+ *  symbols match or not. If symbols do not match, shows location of error
+ *  @author         Bethany Armitage
+ *  course:         COMS B35
+ *  created:        Thu 03/20/2014 
+ *  source file:    Matcher.cpp  
+ */
 
 #include <iostream>
 #include <string>
 #include "Stack.h"
-#include "unorderedLinkedList.h"
 
 using namespace std;
 
@@ -18,25 +24,48 @@ using namespace std;
 * closing grouping symbol is missing, or -1 if mo mismatch found.
 */
 int matchGroupingSymbols ( string str ){
-    unorderedLinkedList<char> *list = new unorderedLinkedList<char>();
+    Stack<char> list;
     int length = str.length();
+    char c;
 
-    for(int i=0; i< length; i++){
-        if (str.at(i) == ("{" || "(" || "[")){
-            cout << "found begin " << endl;
-            //list.push(str.at(i));
-            //return i;
+    for(int i=0; i<length; i++){
+        c = str.at(i);
+        // check for opening symbol
+        if( c== '(' || c== '[' || c =='{'){
+            list.push(c);
         }
-        else if (str.at(i) ==  ("}" || ")" || "]")){
-            cout << "found end" << endl;
-            //return i;
+
+        // check for closing symbol
+        else if( c== ')' || c== ']' || c =='}'){
+            // compare c with top of stack.
+            if(!list.isEmptyStack()){
+                if     (c == ')' && list.top() == '('){
+                    list.pop();
+                }
+                else if(c == '}' && list.top() == '{'){
+                    list.pop();
+                }
+                else if(c == ']' && list.top() == '['){
+                    list.pop();
+                }
+                else { 
+                    return i; //c did not match top of stack
+                }
+            }
+            else{
+                return i; //grouping symbol was found, but stack was empty
+            }
+        }
+        // opening symbol has not been matched with closing by end
+        if ( i== length-1 && !list.isEmptyStack()) {
+            return length;
         }
     }
-
+    // if this point is reached, string does not have mismatched symbols
     return -1;
-
 }
 
+// Main supplied by instructor
 int main() {
     string input;
     cout << "Enter strings to be analyzed.";
@@ -60,4 +89,3 @@ int main() {
     while ((input.length() > 1));
     return 0;
 }
-
