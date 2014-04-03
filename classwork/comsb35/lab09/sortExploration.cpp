@@ -5,54 +5,60 @@
 
 using namespace std;
 //function prototypes
-template <class elemType>
-int partition(elemType list[], int first, int last);
+template <class T>
+int partition(T list[], int first, int last, int &compare, int &assign);
 
-template <class elemType>
-void recQuickSort(elemType list[], int first, int last);
+template <class T>
+void recQuickSort(T list[], int first, int last, int &compare, int &assign);
 
-template <class elemType>
-void quickSort(elemType list[], int length, int &compare, int &assign);
+template <class T>
+void quickSort(T list[], int length, int &compare, int &assign);
 
-template <class elemType>
-void insertionSort(elemType list[], int length, int &compare, int &assign);
+template <class T>
+void insertionSort(T list[], int length, int &compare, int &assign);
 
-template <class elemType>
-int minLocation(elemType list[], int first, int last);
+template <class T>
+int minLocation(T list[], int first, int last, int &compare, int &assign);
 
-template <class elemType>
-void swap(elemType list[], int first, int second);
+template <class T>
+void swap(T list[], int first, int second, int &compare, int &assign);
 
-template <class elemType>
-void selectionSort(elemType list[], int length, int &compare, int &assign);
+template <class T>
+void selectionSort(T list[], int length, int &compare, int &assign);
 
-template <class elemType>
-void bubbleSort(elemType list[], int length, int &compare, int &assign);
+template <class T>
+void bubbleSort(T list[], int length, int &compare, int &assign);
 //end function prototypes
 
+
 int main(){
-   int bubbleSortArray [5000];
-   int quickSortArray [5000];
-   int selectionSortArray [5000];
-   int insertionSortArray [5000];
-   int random;
-   int compare;
-   int assign;
+    //variable declarations
+    int bubbleSortArray    [5000];
+    int quickSortArray     [5000];
+    int selectionSortArray [5000];
+    int insertionSortArray [5000];
+    int randomNumber;
+    int compare;
+    int assign;
+    //end variable declarations
 
-   for(int i=0; i< 5000; i++){
-       random = rand() %20000;
 
-       bubbleSortArray   [i] = random;
-       selectionSortArray[i] = random;
-       insertionSortArray[i] = random;
-       quickSortArray    [i] = random;
-   }
-
-   //print chart header
-   cout << "Sort Type/run   #comparisons   #Assignments\n";
+    //print chart header
+    cout << "Sort Type/run   #comparisons   #Assignments\n";
    
     for(int i=0; i<3; i++){
         cout << "-------------------------------------------------\n";
+
+        //initialize each array with list of random integers [0, 20000]
+        // does there need to be a new list for each 'run'?
+        for(int j=0; j< 5000; j++){
+            randomNumber = rand() %20000;
+
+            bubbleSortArray   [j] = randomNumber;
+            selectionSortArray[j] = randomNumber;
+            insertionSortArray[j] = randomNumber;
+            quickSortArray    [j] = randomNumber;
+        }
 
         //call bubble sort on array
         bubbleSort(bubbleSortArray, 5000, compare, assign);
@@ -69,14 +75,15 @@ int main(){
         //call quick sort on array
         quickSort(quickSortArray, 5000, compare, assign);
         printf("      Quick/%d %14d %14d\n", i, compare, assign);
-
     }
-
     return 0;
 }
- 
-template <class elemType>
-void bubbleSort(elemType list[], int length, int &compare, int &assign)
+/*
+* sorts a list of 
+*/
+//why aren't there any assignments counted in bubbleSort?
+template <class T>
+void bubbleSort(T list[], int length, int &compare, int &assign)
 {
     for (int iteration = 1; iteration < length; iteration++)
     {
@@ -85,42 +92,44 @@ void bubbleSort(elemType list[], int length, int &compare, int &assign)
         {
             if (list[index] > list[index + 1])
             {
-                elemType temp = list[index];
+                compare++;
+                T temp = list[index];
                 list[index] = list[index + 1];
                 list[index + 1] = temp;
             }
+            else
+                compare++;
         }
     }
-    compare = 0;
     assign = 0;
 } //end bubbleSort
 
-template <class elemType>
-void selectionSort(elemType list[], int length, int &compare, int &assign)
+template <class T>
+void selectionSort(T list[], int length, int &compare, int &assign)
 {
     int loc, minIndex;
 
     for (loc = 0; loc < length; loc++)
     {
-        minIndex = minLocation(list, loc, length - 1);
-        swap(list, loc, minIndex);
+        minIndex = minLocation(list, loc, length - 1, compare, assign);
+        swap(list, loc, minIndex, compare, assign);
     }
     compare = 0;
     assign = 0;
 } //end selectionSort
 
-template <class elemType>
-void swap(elemType list[], int first, int second)
+template <class T>
+void swap(T list[], int first, int second, int &compare, int &assign)
 {
-    elemType temp;
+    T temp;
 
     temp = list[first];
     list[first] = list[second];
     list[second] = temp;
 } //end swap
 
-template <class elemType>
-int minLocation(elemType list[], int first, int last)
+template <class T>
+int minLocation(T list[], int first, int last, int &compare, int &assign)
 {
     int loc, minIndex;
 
@@ -133,14 +142,14 @@ int minLocation(elemType list[], int first, int last)
     return minIndex;
 } //end minLocation
 
-template <class elemType>
-void insertionSort(elemType list[], int length, int &compare, int &assign)
+template <class T>
+void insertionSort(T list[], int length, int &compare, int &assign)
 {
     for (int firstOutOfOrder = 1; firstOutOfOrder < length;
                                   firstOutOfOrder++)
         if (list[firstOutOfOrder] < list[firstOutOfOrder - 1])
         {
-            elemType temp = list[firstOutOfOrder];
+            T temp = list[firstOutOfOrder];
             int location = firstOutOfOrder;
 
             do
@@ -155,35 +164,35 @@ void insertionSort(elemType list[], int length, int &compare, int &assign)
     assign = 0;
 } //end insertionSort
 
-template <class elemType>
-void quickSort(elemType list[], int length, int &compare, int &assign)
+template <class T>
+void quickSort(T list[], int length, int &compare, int &assign)
 {
-    recQuickSort(list, 0, length - 1);
+    recQuickSort(list, 0, length - 1, compare, assign);
     compare = 0;
     assign = 0;
 } //end quickSort
 
-template <class elemType>
-void recQuickSort(elemType list[], int first, int last)
+template <class T>
+void recQuickSort(T list[], int first, int last, int &compare, int &assign)
 {
     int pivotLocation;
 
     if (first < last)
     {
-        pivotLocation = partition(list, first, last);
-        recQuickSort(list, first, pivotLocation - 1);
-        recQuickSort(list, pivotLocation + 1, last);
+        pivotLocation = partition(list, first, last, compare, assign);
+        recQuickSort(list, first, pivotLocation - 1, compare, assign);
+        recQuickSort(list, pivotLocation + 1, last, compare, assign);
     }
 } //end recQuickSort
 
-template <class elemType>
-int partition(elemType list[], int first, int last)
+template <class T>
+int partition(T list[], int first, int last, int &compare, int &assign)
 {
-    elemType pivot;
+    T pivot;
 
     int index, smallIndex;
 
-    swap(list, first, (first + last) / 2);
+    swap(list, first, (first + last) / 2, compare, assign);
 
     pivot = list[first];
     smallIndex = first;
@@ -192,10 +201,10 @@ int partition(elemType list[], int first, int last)
         if (list[index] < pivot)
         {
             smallIndex++;
-            swap(list, smallIndex, index);
+            swap(list, smallIndex, index, compare, assign);
         }
 
-    swap(list, first, smallIndex);
+    swap(list, first, smallIndex, compare, assign);
 
     return smallIndex;
 } //end partition
