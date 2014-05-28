@@ -2,17 +2,24 @@
 /* Master Style Sheet for webpage */
 
 #border {
-position: top-middle;
-size: fixed;
-margin: auto;
-border: 3px solid grey;
-height:700px ;
-width:900px;
+    //position: top-middle;
+    //background-color: grey;
+    //size: fixed;
+    //margin: auto;
+    //border: 3px solid grey;
+    //height:700px ;
+    //width:900px;
 }
 
 // paragraph
 p {
-position: top-middle;
-color: grey;
+    //position: top-middle;
 }	
+
+#image {
+    //min height: 700px;
+    //min width: 700px;
+    position: top-middle;
+    border: 3px solid grey;
+}
 
