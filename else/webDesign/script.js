@@ -3,11 +3,11 @@
 // add better scrolling effect later;
 
 var pictures = [
-    "one.jpg",
-    "two.jpg",
-    "three.jpg",
-    "four.jpg",
+"http://cdn.damninteresting.com/wp-content/uploads/2005/12/one.gif",
+"http://www.clker.com/cliparts/G/V/k/w/7/Z/two-green-square-rounded-edge-md.png",
+"http://rayhigdon.com/wp-content/uploads/2014/05/daily-routine-tips.gif",
 ];
+
 var i= -1;
 
 document.addEventListener('keydown', function(event) {
@@ -41,14 +41,6 @@ document.addEventListener('keydown', function(event) {
     else if(event.keyCode == 27){
         document.images.slide.src=pictures[0];
         i=0;
-    }
-    //up arrow
-    else if(event.keyCode == 38){
-        //scale picture up by a percentage
-    }
-    //down arrow
-    else if(event.keyCode == 38){
-        //scale picture down by a percentage
     }
     return;
 });
